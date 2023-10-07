@@ -1,5 +1,5 @@
 *.iml
-../../../../Users/박병규/Desktop/SKKedula/.gradle
+.gradle
 /local.properties
 /.idea/caches
 /.idea/libraries
