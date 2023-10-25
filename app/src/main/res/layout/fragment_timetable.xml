@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="6"
+    tools:context=".Timetable">
+
+    <TextView
+        android:layout_columnWeight="0.3"
+        android:layout_gravity="fill_horizontal"
+        android:text=""
+        android:background="@drawable/cell"
+        android:gravity="center"/>
+    <TextView
+        android:layout_columnWeight="1"
+        android:text="월"
+        android:background="@drawable/cell"
+        android:gravity="center"/>
+    <TextView
+        android:layout_columnWeight="1"
+        android:text="화"
+        android:background="@drawable/cell"
+        android:gravity="center"/>
+    <TextView
+        android:layout_columnWeight="1"
+        android:text="수"
+        android:background="@drawable/cell"
+        android:gravity="center"/>
+    <TextView
+        android:layout_columnWeight="1"
+        android:text="목"
+        android:background="@drawable/cell"
+        android:gravity="center"/>
+    <TextView
+        android:layout_columnWeight="1"
+        android:text="금"
+        android:background="@drawable/cell"
+        android:gravity="center"/>
+
+</GridLayout>
