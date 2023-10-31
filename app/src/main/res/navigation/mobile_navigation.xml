@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/menu_timetable">
+
+    <fragment
+        android:id="@+id/menu_timetable"
+        android:name="edu.skku.cs.skkedula.fragments.timetable.EmptyTimetable"
+        android:label="timetable"
+        tools:layout="@layout/fragment_empty_timetable" />
+
+    <fragment
+        android:id="@+id/menu_map"
+        android:name="edu.skku.cs.skkedula.fragments.map.MapFragment"
+        android:label="map"
+        tools:layout="@layout/fragment_map"/>
+
+    <fragment
+        android:id="@+id/menu_bookmark"
+        android:name="edu.skku.cs.skkedula.fragments.bookmark.BookmarkFragment"
+        android:label="bookmark"
+        tools:layout="@layout/fragment_bookmark"/>
+</navigation>

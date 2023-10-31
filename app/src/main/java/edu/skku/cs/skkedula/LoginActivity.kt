@@ -49,7 +49,7 @@ class LoginActivity : AppCompatActivity() {
 
             if (isValid(username, password)) {
                 errorMessageTextView.text = ""
-                val intent = Intent(this, ConnectTimeTableActivity::class.java)
+                val intent = Intent(this, SkkedulaActivity::class.java)
                 startActivity(intent)
             } else {
                 errorMessageTextView.text = "아이디나 비밀번호가 올바르지 않습니다."
