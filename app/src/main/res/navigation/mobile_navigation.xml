@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/menu_timetable"
-        android:name="edu.skku.cs.skkedula.fragments.timetable.EmptyTimetable"
+        android:name="edu.skku.cs.skkedula.fragments.timetable.TimetablePage"
         android:label="timetable"
-        tools:layout="@layout/fragment_empty_timetable" />
+        tools:layout="@layout/fragment_timetable_page" />
 
     <fragment
         android:id="@+id/menu_map"

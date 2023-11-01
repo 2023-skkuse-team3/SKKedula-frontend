@@ -11,20 +11,20 @@
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="52dp"
         android:background="@drawable/button_green"
         android:fontFamily="@font/poppins_regular"
         android:fontWeight="600"
-        android:textSize="16dp"
         android:onClick="navigateLoginActivity"
         android:text="URL로 간편 등록하기"
         android:textColor="#FFFFFF"
+        android:textSize="16dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/InputUrl" />
 
     <TextView
         android:id="@+id/textView6"
@@ -32,12 +32,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="76dp"
         android:text="시간표가 존재하지 않습니다."
-        app:layout_constraintBottom_toTopOf="@+id/urlLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.527" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/InputUrl"
@@ -45,17 +43,16 @@
         android:layout_height="48dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="8dp"
-        android:ems="10"
-        android:inputType="text"
-        android:hint="https://everytime.kr/@example"
         android:background="@drawable/lightgray_border"
+        android:ems="10"
+        android:hint="https://everytime.kr/@example"
+        android:inputType="text"
         android:paddingHorizontal="10dp"
         android:textColor="@color/gray"
-        app:layout_constraintBottom_toTopOf="@+id/addWithUrl"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/urlLabel" />
 
     <android.widget.Button
         android:id="@+id/addDirectly"
@@ -63,41 +60,41 @@
         android:layout_height="48dp"
         android:layout_marginStart="24dp"
 
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="236dp"
         android:background="@drawable/button_white"
         android:fontFamily="@font/poppins_regular"
         android:fontWeight="600"
         android:onClick="navigateLoginActivity"
         android:text="직접 등록하기"
         android:textColor="#111111"
-        android:textStyle="bold"
         android:textSize="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
     <TextView
         android:id="@+id/urlLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginBottom="8dp"
-        android:textColor="@color/gray"
+        android:layout_marginTop="92dp"
         android:text="에브리타임 앱 > 시간표 > 설정 > URL 복사하기"
-        app:layout_constraintBottom_toTopOf="@+id/InputUrl"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:textColor="@color/gray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <TextView
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="32dp"
         android:text="애브리타임 시간표가 없으신가요?"
         android:textColor="@color/gray"
-        app:layout_constraintBottom_toTopOf="@+id/addDirectly"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addWithUrl" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

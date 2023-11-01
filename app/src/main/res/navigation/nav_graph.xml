@@ -6,9 +6,9 @@
     app:startDestination="@id/emptyTimetable">
     <fragment
         android:id="@+id/emptyTimetable"
-        android:name="edu.skku.cs.skkedula.fragments.timetable.EmptyTimetable"
-        android:label="fragment_empty_timetable"
-        tools:layout="@layout/fragment_empty_timetable" >
+        android:name="edu.skku.cs.skkedula.fragments.timetable.TimetablePage"
+        android:label="fragment_timetable_page"
+        tools:layout="@layout/fragment_timetable_page" >
         <action
             android:id="@+id/action_emptyTimetable_to_mapFragment"
             app:destination="@id/mapFragment" />
