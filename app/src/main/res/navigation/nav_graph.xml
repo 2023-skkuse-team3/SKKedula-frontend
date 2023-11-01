@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/emptyTimetable">
+    <fragment
+        android:id="@+id/emptyTimetable"
+        android:name="edu.skku.cs.skkedula.fragments.timetable.EmptyTimetable"
+        android:label="fragment_empty_timetable"
+        tools:layout="@layout/fragment_empty_timetable" >
+        <action
+            android:id="@+id/action_emptyTimetable_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_emptyTimetable_to_bookmarkFragment"
+            app:destination="@id/bookmarkFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="edu.skku.cs.skkedula.fragments.map.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_mapFragment_to_bookmarkFragment"
+            app:destination="@id/bookmarkFragment" />
+        <action
+            android:id="@+id/action_mapFragment_to_emptyTimetable"
+            app:destination="@id/emptyTimetable" />
+    </fragment>
+    <fragment
+        android:id="@+id/bookmarkFragment"
+        android:name="edu.skku.cs.skkedula.fragments.bookmark.BookmarkFragment"
+        android:label="BookmarkFragment" >
+        <action
+            android:id="@+id/action_bookmarkFragment_to_emptyTimetable"
+            app:destination="@id/emptyTimetable" />
+        <action
+            android:id="@+id/action_bookmarkFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
+</navigation>
