@@ -1,14 +1,14 @@
-package edu.skku.cs.skkedula
+package edu.skku.cs.skkedula.fragments.timetable
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.material.appbar.MaterialToolbar
 import com.islandparadise14.mintable.MinTimeTableView
 import com.islandparadise14.mintable.model.ScheduleDay
 import com.islandparadise14.mintable.model.ScheduleEntity
+import edu.skku.cs.skkedula.R
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -33,6 +33,8 @@ class Timetable : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
     }
+    fun Fragment.addOnWindowFocusChangeListener(callback: (hasFocus: Boolean) -> Unit) =
+        view?.viewTreeObserver?.addOnWindowFocusChangeListener(callback)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +42,11 @@ class Timetable : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_timetable, container, false)
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val table = view.findViewById<MinTimeTableView>(R.id.table)
         table.initTable(day)
 
@@ -56,8 +63,7 @@ class Timetable : Fragment() {
         )
 
         scheduleList.add(schedule)
-
-        return view
+        table.updateSchedules(scheduleList)
     }
 
     companion object {

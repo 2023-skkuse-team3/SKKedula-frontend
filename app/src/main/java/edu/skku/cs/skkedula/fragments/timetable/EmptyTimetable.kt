@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import edu.skku.cs.skkedula.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -36,6 +39,19 @@ class EmptyTimetable : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_empty_timetable, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // apply navigation bar
+        val navController = view.findNavController()
+
+        // 버튼 클릭 시 Fragment 전환
+        val button = view.findViewById<Button>(R.id.addDirectly)
+        button.setOnClickListener {
+            navController.navigate(R.id.action_emptyTimetable_to_timetable)
+        }
     }
 
     companion object {

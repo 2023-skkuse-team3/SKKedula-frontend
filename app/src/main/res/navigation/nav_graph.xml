@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/emptyTimetable">
+    app:startDestination="@id/timetableFragment">
     <fragment
-        android:id="@+id/emptyTimetable"
+        android:id="@+id/timetableFragment"
         android:name="edu.skku.cs.skkedula.fragments.timetable.TimetablePage"
         android:label="fragment_timetable_page"
         tools:layout="@layout/fragment_timetable_page" >
@@ -26,7 +26,7 @@
             app:destination="@id/bookmarkFragment" />
         <action
             android:id="@+id/action_mapFragment_to_emptyTimetable"
-            app:destination="@id/emptyTimetable" />
+            app:destination="@id/timetableFragment" />
     </fragment>
     <fragment
         android:id="@+id/bookmarkFragment"
@@ -34,7 +34,7 @@
         android:label="BookmarkFragment" >
         <action
             android:id="@+id/action_bookmarkFragment_to_emptyTimetable"
-            app:destination="@id/emptyTimetable" />
+            app:destination="@id/timetableFragment" />
         <action
             android:id="@+id/action_bookmarkFragment_to_mapFragment"
             app:destination="@id/mapFragment" />
