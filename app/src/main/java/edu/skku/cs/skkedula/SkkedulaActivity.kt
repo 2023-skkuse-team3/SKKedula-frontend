@@ -1,10 +1,13 @@
 package edu.skku.cs.skkedula
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.Toast
 import android.widget.Toolbar
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.commit
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -16,6 +19,22 @@ import edu.skku.cs.skkedula.databinding.ActivityMainBinding
 class SkkedulaActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
+    private fun showLogoutDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("로그아웃 하시겠습니까?")
+
+        builder.setPositiveButton("확인") { _, _ ->
+            finish()
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
+        builder.setNegativeButton("취소") { _, _ ->
+
+        }
+        val dialog = builder.create()
+        dialog.show()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_skkedula)
@@ -25,10 +44,10 @@ class SkkedulaActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         findViewById<BottomNavigationView>(R.id.nav_view).setupWithNavController(navController)
 
-        // TODO: Add action when logout button pressed
+        // logout control
         val logout = findViewById<ImageView>(R.id.imageView)
         logout.setOnClickListener{
-            Toast.makeText(this,"로그아웃 버튼 눌림", Toast.LENGTH_SHORT).show()
+            showLogoutDialog()
         }
     }
 }

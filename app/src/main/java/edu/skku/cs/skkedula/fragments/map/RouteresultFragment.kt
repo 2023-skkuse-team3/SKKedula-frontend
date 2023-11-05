@@ -6,23 +6,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import edu.skku.cs.skkedula.R
-import edu.skku.cs.skkedula.databinding.FragmentMapBinding
 
+// TODO: Rename parameter arguments, choose names that match
+// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-class MapFragment : Fragment() {
-    private var _binding: FragmentMapBinding? = null
-    private val binding get() = _binding!!
+/**
+ * A simple [Fragment] subclass.
+ * Use the [RouteresultFragment.newInstance] factory method to
+ * create an instance of this fragment.
+ */
+class RouteresultFragment : Fragment() {
+    // TODO: Rename and change types of parameters
+    private var param1: String? = null
+    private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        /*
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-        */
     }
 
     override fun onCreateView(
@@ -30,21 +35,7 @@ class MapFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentMapBinding.inflate(inflater, container, false)
-        val buttonNavigate = binding.experimentbutton
-        buttonNavigate.setOnClickListener{
-            val transaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.nav_host_fragment_activity_main, RoutesearchFragment())
-            //transaction.addToBackStack("fragment_map")
-            transaction.commit()
-        }
-        val rootView = binding.root
-        return rootView
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        return inflater.inflate(R.layout.fragment_routeresult, container, false)
     }
 
     companion object {
@@ -54,12 +45,12 @@ class MapFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment MapFragment.
+         * @return A new instance of fragment RouteresultFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            MapFragment().apply {
+            RouteresultFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)

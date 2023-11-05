@@ -6,7 +6,7 @@
     </style>
 
     <style name="Theme.SKKedula" parent="Base.Theme.SKKedula">
-        <item name="colorPrimary">@color/lightgray</item>
+        <item name="colorPrimary">@color/black</item>
         <item name="colorPrimaryVariant">@color/gray</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
