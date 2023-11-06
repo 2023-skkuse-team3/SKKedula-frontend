@@ -1,13 +1,17 @@
 package edu.skku.cs.skkedula.fragments.timetable
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import androidx.fragment.app.FragmentContainerView
 import com.islandparadise14.mintable.MinTimeTableView
 import com.islandparadise14.mintable.model.ScheduleDay
 import com.islandparadise14.mintable.model.ScheduleEntity
+import com.islandparadise14.mintable.tableinterface.OnScheduleClickListener
 import edu.skku.cs.skkedula.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -36,6 +40,7 @@ class Timetable : Fragment() {
     fun Fragment.addOnWindowFocusChangeListener(callback: (hasFocus: Boolean) -> Unit) =
         view?.viewTreeObserver?.addOnWindowFocusChangeListener(callback)
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,11 +63,23 @@ class Timetable : Fragment() {
             ScheduleDay.TUESDAY, //ScheduleDay object (MONDAY ~ SUNDAY)
             "8:20", //startTime format: "HH:mm"
             "10:30", //endTime  format: "HH:mm"
-            "#73fcae68", //backgroundColor (optional)
-            "#000000" //textcolor (optional)
+            "#F08676", //backgroundColor (optional)
+            "#FFFFFF" //textcolor (optional)
         )
 
         scheduleList.add(schedule)
+
+        val buttomUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.bottom_up)
+        val targetView = requireActivity().findViewById<FragmentContainerView>(R.id.card)
+        table.setOnScheduleClickListener(
+            object : OnScheduleClickListener {
+                override fun scheduleClicked(entity: ScheduleEntity) {
+                    Log.d("test log", entity.scheduleName)
+                    targetView.startAnimation(buttomUpAnimation)
+                    targetView.visibility = View.VISIBLE
+                }
+            }
+        )
         table.updateSchedules(scheduleList)
     }
 
