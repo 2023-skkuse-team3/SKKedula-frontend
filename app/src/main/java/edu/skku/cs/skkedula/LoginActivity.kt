@@ -49,6 +49,7 @@ class LoginActivity : AppCompatActivity() {
 
             if (isValid(username, password)) {
                 errorMessageTextView.text = ""
+                finish()
                 val intent = Intent(this, SkkedulaActivity::class.java)
                 startActivity(intent)
             } else {
