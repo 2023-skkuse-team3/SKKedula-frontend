@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.FragmentContainerView
+import androidx.navigation.Navigation
 import com.islandparadise14.mintable.MinTimeTableView
 import com.islandparadise14.mintable.model.ScheduleDay
 import com.islandparadise14.mintable.model.ScheduleEntity
@@ -74,6 +75,10 @@ class Timetable : Fragment() {
         table.setOnScheduleClickListener(
             object : OnScheduleClickListener {
                 override fun scheduleClicked(entity: ScheduleEntity) {
+                    // apply navigation bar
+                    val navController = Navigation.findNavController(requireActivity(), R.id.card)
+                    navController.navigate(R.id.courseDetail)
+
                     Log.d("test log", entity.scheduleName)
                     targetView.startAnimation(buttomUpAnimation)
                     targetView.visibility = View.VISIBLE

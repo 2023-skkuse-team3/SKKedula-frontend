@@ -21,7 +21,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/addCustomSchedule"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="50dp"
         android:fontFamily="@font/poppins_regular"
         android:fontWeight="600"
         android:gravity="left"
@@ -30,15 +30,15 @@
         android:textStyle="bold"
         app:backgroundTint="#00000000"
         app:icon="@drawable/calendar"
-        app:iconSize="27dp"
         app:iconPadding="20dp"
+        app:iconSize="27dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.517"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/contour1" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/addCustomSchedule2"
+        android:id="@+id/deleteTimetable"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:fontFamily="@font/poppins_regular"

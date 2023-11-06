@@ -49,8 +49,24 @@ class EmptyTimetable : Fragment() {
 
         // 버튼 클릭 시 Fragment 전환
         val button = view.findViewById<Button>(R.id.addDirectly)
+        val urlButton = view.findViewById<Button>(R.id.addWithUrl)
+
         button.setOnClickListener {
-            navController.navigate(R.id.action_emptyTimetable_to_timetable)
+            // timetable fragment로 교체
+            val timetable = Timetable()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, timetable)
+                .commit()
+        }
+
+        urlButton.setOnClickListener {
+            // timetable fragment로 교체
+            val timetable = Timetable()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, timetable)
+                .commit()
+
+            // 사용자의 강의 목록 불러와 시간표에 추가하기
         }
     }
 
