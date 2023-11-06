@@ -6,30 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".SkkedulaActivity">
 
-    <!-- TODO: Update blank fragment layout -->
-<<<<<<< Updated upstream
-    <TextView
-        android:id="@+id/textView7"
-=======
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
->>>>>>> Stashed changes
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:name="com.naver.maps.map.MapFragment" />
 
-<<<<<<< Updated upstream
-    <Button
-        android:id="@+id/experimentbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Fragment 이동 실험용 버튼"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView7" />
-</androidx.constraintlayout.widget.ConstraintLayout>
-=======
     <EditText
         android:id="@+id/search"
         android:layout_width="300dp"
@@ -106,4 +88,3 @@
         app:layout_constraintTop_toBottomOf="@+id/search" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
->>>>>>> Stashed changes
