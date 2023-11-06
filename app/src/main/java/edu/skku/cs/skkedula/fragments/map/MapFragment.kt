@@ -31,7 +31,7 @@ class MapFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentMapBinding.inflate(inflater, container, false)
-        val buttonNavigate = binding.experimentbutton
+        val buttonNavigate = binding.route
         buttonNavigate.setOnClickListener{
             val transaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.nav_host_fragment_activity_main, RoutesearchFragment())
