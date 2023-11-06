@@ -1,13 +1,10 @@
 package edu.skku.cs.skkedula.fragments.timetable
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import edu.skku.cs.skkedula.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -17,10 +14,10 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [EmptyTimetable.newInstance] factory method to
+ * Use the [TimetableMenu.newInstance] factory method to
  * create an instance of this fragment.
  */
-class EmptyTimetable : Fragment() {
+class TimetableMenu : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -38,20 +35,7 @@ class EmptyTimetable : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_empty_timetable, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        // apply navigation bar
-        val navController = view.findNavController()
-
-        // 버튼 클릭 시 Fragment 전환
-        val button = view.findViewById<Button>(R.id.addDirectly)
-        button.setOnClickListener {
-            navController.navigate(R.id.action_emptyTimetable_to_timetable)
-        }
+        return inflater.inflate(R.layout.fragment_timetable_menu, container, false)
     }
 
     companion object {
@@ -61,12 +45,12 @@ class EmptyTimetable : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment EmptyTimetable.
+         * @return A new instance of fragment TimetableMenu.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            EmptyTimetable().apply {
+            TimetableMenu().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
