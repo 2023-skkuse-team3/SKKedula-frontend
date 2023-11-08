@@ -72,7 +72,7 @@
         android:ems="10"
         android:hint="제목"
         android:inputType="text"
-        android:paddingVertical="5dp"
+        android:padding="5dp"
         android:textSize="16dp"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
@@ -90,7 +90,7 @@
         android:ems="10"
         android:hint="장소"
         android:inputType="text"
-        android:paddingVertical="5dp"
+        android:padding="5dp"
         android:textSize="16dp"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
@@ -111,5 +111,42 @@
         android:popupBackground="@color/skkugreen"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/location" />
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/daySpinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/daySpinner"
+        app:layout_constraintTop_toTopOf="@+id/daySpinner">
+
+        <TextView
+            android:id="@+id/startTime"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:paddingVertical="0dp"
+            android:gravity="center"
+            android:background="@drawable/input_background2"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:text="시작 시각" />
+
+        <TextView
+            android:id="@+id/endTime"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/input_background2"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:text="종료 시각" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

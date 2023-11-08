@@ -10,9 +10,4 @@
         android:color="#50C4C4C4" />
     <corners
         android:radius="5dp" />
-    <padding
-        android:left="10dp"
-        android:top="10dp"
-        android:right="10dp"
-        android:bottom="10dp"/>
 </shape>

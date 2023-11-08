@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/card_shape"
-    android:padding="13dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="13dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/roundLine1"
@@ -29,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
-        android:background="#FFFFFF"
+        android:background="#50FFFFFF"
         app:layout_constraintTop_toBottomOf="@+id/time"
         tools:layout_editor_absoluteX="9dp" />
 
@@ -44,20 +43,20 @@
         android:contentDescription="Image Description"
         android:fontFamily="@font/poppins_regular"
         android:fontWeight="600"
-        android:text="강의실 위치 찾기"
-        android:textSize="16dp"
         android:gravity="center"
-        android:textStyle="bold"
+        android:text="강의실 위치 찾기"
         android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold"
         app:backgroundTint="@color/white"
         app:icon="@drawable/map1"
-        app:iconTint="@color/black"
         app:iconGravity="textStart"
         app:iconSize="20dp"
+        app:iconTint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView12" />
+        app:layout_constraintTop_toBottomOf="@+id/destinationInfo" />
 
     <ImageButton
         android:id="@+id/imageButton2"
@@ -80,7 +79,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/poppins_bold"
-        android:text="소프트웨어공학개론"
+        android:text="(강의명)"
         android:textColor="@color/white"
         android:textSize="18dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -92,7 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="0dp"
-        android:text="차수영"
+        android:text="(교수명)"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/courseName" />
@@ -102,7 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="제2공학관 3층 26312"
+        android:text="(강의실정보)"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/professor" />
@@ -118,36 +117,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/classroom" />
 
-    <EditText
+    <TextView
         android:id="@+id/startPointValue"
         android:layout_width="0dp"
         android:layout_height="26dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:autofillHints=""
-        android:background="@drawable/lightgray_border"
+        android:background="@drawable/input_background2"
         android:ems="10"
         android:inputType="text"
-        android:padding="5dp"
         android:text="시간표에서 현위치 선택하기(기본: 현위치)"
         android:textColor="@color/white"
         android:textSize="15dp"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/startPoint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/startPoint"
         app:layout_constraintTop_toTopOf="@+id/startPoint" />
 
     <TextView
-        android:id="@+id/textView12"
+        android:id="@+id/destinationInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="26312(제2공학관 3층, 소프트웨어공학개론)"
+        android:text="(도착지 정보)"
         android:textColor="@color/white"
         android:textSize="15dp"
         app:layout_constraintBottom_toBottomOf="@+id/destination"
         app:layout_constraintStart_toEndOf="@+id/destination"
-        app:layout_constraintTop_toBottomOf="@+id/startPoint" />
+        app:layout_constraintTop_toTopOf="@+id/destination" />
 
     <TextView
         android:id="@+id/startPoint"
@@ -166,7 +165,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="5dp"
         android:fontFamily="@font/poppins_bold"
         android:text="도착"
         android:textColor="@color/white"

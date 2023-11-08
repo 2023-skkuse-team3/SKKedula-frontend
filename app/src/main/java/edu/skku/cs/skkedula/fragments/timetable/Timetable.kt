@@ -8,12 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import com.islandparadise14.mintable.MinTimeTableView
 import com.islandparadise14.mintable.model.ScheduleDay
 import com.islandparadise14.mintable.model.ScheduleEntity
 import com.islandparadise14.mintable.tableinterface.OnScheduleClickListener
 import edu.skku.cs.skkedula.R
+import edu.skku.cs.skkedula.databinding.FragmentRouteresultBinding
+import edu.skku.cs.skkedula.fragments.map.MapViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,6 +34,28 @@ class Timetable : Fragment() {
     private var param2: String? = null
     private val day = arrayOf("월", "화", "수", "목", "금")
 
+    private val timetableViewModel: TimetableViewModel by activityViewModels()
+    val scheduleList: ArrayList<ScheduleEntity> = ArrayList()
+    fun setTempCourseInfo(courseName: String, classroom: String) {
+        timetableViewModel.setTempCourseInfo(courseName, classroom)
+
+        // user, courseName으로 나머지 정보 불러와 viewmodel에 정보 저장
+    }
+
+    fun addSchedule(table: View,name: String, day: String, roomInfo: String, startTime: String, endTime: String) {
+        val schedule = ScheduleEntity(
+            32, //originId
+            name, //scheduleName
+            roomInfo, //roomInfo
+            ScheduleDay.TUESDAY, //ScheduleDay object (MONDAY ~ SUNDAY)
+            startTime, //startTime format: "HH:mm"
+            endTime, //endTime  format: "HH:mm"
+            "#F08676", //backgroundColor (optional)
+            "#FFFFFF" //textcolor (optional)
+        )
+        scheduleList.add(schedule)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -38,9 +63,6 @@ class Timetable : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
     }
-    fun Fragment.addOnWindowFocusChangeListener(callback: (hasFocus: Boolean) -> Unit) =
-        view?.viewTreeObserver?.addOnWindowFocusChangeListener(callback)
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,7 +78,6 @@ class Timetable : Fragment() {
         val table = view.findViewById<MinTimeTableView>(R.id.table)
         table.initTable(day)
 
-        val scheduleList: ArrayList<ScheduleEntity> = ArrayList()
         val schedule = ScheduleEntity(
             32, //originId
             "소프트웨어공학개론", //scheduleName
@@ -79,7 +100,10 @@ class Timetable : Fragment() {
                     val navController = Navigation.findNavController(requireActivity(), R.id.card)
                     navController.navigate(R.id.courseDetail)
 
-                    Log.d("test log", entity.scheduleName)
+                    // card에 띄울 강의 정보 설정
+                    setTempCourseInfo(entity.scheduleName, entity.roomInfo)
+
+                    // card 띄우기
                     targetView.startAnimation(buttomUpAnimation)
                     targetView.visibility = View.VISIBLE
                 }

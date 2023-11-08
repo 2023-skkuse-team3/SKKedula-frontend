@@ -4,8 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import edu.skku.cs.skkedula.R
+import edu.skku.cs.skkedula.fragments.map.MapViewModel
+import org.w3c.dom.Text
 
 /**
  * A simple [Fragment] subclass.
@@ -19,6 +23,8 @@ class CourseDetail : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+    private val timetableViewModel: TimetableViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +40,31 @@ class CourseDetail : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_course_detail, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // 도착지 string 초기화
+        var destination = ""
+
+        // 강의실 정보 표시
+        timetableViewModel.tempClassroom.observe(viewLifecycleOwner) { text ->
+            val classroom = view.findViewById<TextView>(R.id.classroom)
+            classroom.text = text
+            destination += text
+        }
+
+        // 강의명 표시
+        timetableViewModel.tempCourseName.observe(viewLifecycleOwner) { text ->
+            val courseName = view.findViewById<TextView>(R.id.courseName)
+            courseName.text = text
+            destination += "($text)"
+
+            // 도착지 표시
+            val destinationLabel = view.findViewById<TextView>(R.id.destinationInfo)
+            destinationLabel.text = destination
+        }
     }
 
     companion object {

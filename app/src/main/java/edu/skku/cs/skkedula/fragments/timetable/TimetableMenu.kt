@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
@@ -80,7 +81,8 @@ class TimetableMenu : Fragment() {
                 .setMessage("시간표를 삭제하시겠습니까?")
                 .setPositiveButton("확인",
                     DialogInterface.OnClickListener { dialog, id ->
-                        // 시간표 삭제하기
+                        // 시간표 삭제하기 (API)
+
 
                         // empty timetable로 이동
                         val emptyTimetable = EmptyTimetable()
@@ -88,6 +90,10 @@ class TimetableMenu : Fragment() {
                             .replace(R.id.fragmentContainerView, emptyTimetable)
                             .addToBackStack(null) // 이전 fragment로 돌아갈 수 있도록 스택에 추가
                             .commit()
+
+                        // timetable edit button 숨기기
+                        val editButton = requireActivity().findViewById<ImageButton>(R.id.editButton)
+                        editButton?.visibility = View.GONE
                     })
                 .setNegativeButton("취소",
                     DialogInterface.OnClickListener { dialog, id ->

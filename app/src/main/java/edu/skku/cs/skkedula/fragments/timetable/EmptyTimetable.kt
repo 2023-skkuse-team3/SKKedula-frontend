@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import edu.skku.cs.skkedula.R
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -52,6 +54,11 @@ class EmptyTimetable : Fragment() {
         val urlButton = view.findViewById<Button>(R.id.addWithUrl)
 
         button.setOnClickListener {
+
+            // timetable edit button 표시
+            val editButton = requireActivity().findViewById<ImageButton>(R.id.editButton)
+            editButton?.visibility = View.VISIBLE
+
             // timetable fragment로 교체
             val timetable = Timetable()
             requireActivity().supportFragmentManager.beginTransaction()
@@ -65,6 +72,10 @@ class EmptyTimetable : Fragment() {
             requireActivity().supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, timetable)
                 .commit()
+
+            // timetable edit button 표시
+            val editButton = requireActivity().findViewById<ImageButton>(R.id.editButton)
+            editButton?.visibility = View.VISIBLE
 
             // 사용자의 강의 목록 불러와 시간표에 추가하기
         }
