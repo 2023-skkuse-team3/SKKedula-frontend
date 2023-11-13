@@ -1,10 +1,17 @@
 package edu.skku.cs.skkedula.fragments.timetable
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import edu.skku.cs.skkedula.R
 
 /**
@@ -32,7 +39,27 @@ class TimetablePage : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_timetable_page, container, false)
+        val view = inflater.inflate(R.layout.fragment_timetable_page, container, false)
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // timetable edit button
+        val editButton = view.findViewById<ImageButton>(R.id.editButton)
+
+        // timetable 수정 버튼
+        editButton.setOnClickListener {
+            val targetView = requireActivity().findViewById<FragmentContainerView>(R.id.card)
+            val buttomUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.bottom_up)
+            targetView.startAnimation(buttomUpAnimation)
+            targetView.visibility = View.VISIBLE
+
+            // apply navigation bar
+            val navController = Navigation.findNavController(requireActivity(), R.id.card)
+            navController.navigate(R.id.timetableMenu)
+        }
     }
 
     companion object {

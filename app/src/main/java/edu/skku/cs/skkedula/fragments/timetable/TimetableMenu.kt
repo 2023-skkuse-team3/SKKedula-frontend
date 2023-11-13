@@ -1,11 +1,22 @@
 package edu.skku.cs.skkedula.fragments.timetable
 
+import android.content.DialogInterface
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import com.google.android.material.button.MaterialButton
 import edu.skku.cs.skkedula.R
+import androidx.fragment.app.commit
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,6 +47,61 @@ class TimetableMenu : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_timetable_menu, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // 강의 추가하기 메뉴
+        val courseBtn = view.findViewById<MaterialButton>(R.id.addCourse)
+        courseBtn.setOnClickListener {
+            // apply navigation bar
+            val navController = Navigation.findNavController(requireActivity(), R.id.card)
+            navController.navigate(R.id.courseSearchFragment)
+        }
+
+        // 커스텀 일정 추가하기 메뉴
+        val scheduleBtn = view.findViewById<MaterialButton>(R.id.addCustomSchedule)
+        scheduleBtn.setOnClickListener {
+            // apply navigation bar
+            val navController = Navigation.findNavController(requireActivity(), R.id.card)
+            navController.navigate(R.id.customScheduleFragment)
+        }
+
+        // 시간표 지우기 메뉴
+        val deleteBtn = view.findViewById<MaterialButton>(R.id.deleteTimetable)
+        deleteBtn.setOnClickListener {
+            // card 끄기
+            val targetView = requireActivity().findViewById<FragmentContainerView>(R.id.card)
+            targetView.visibility = View.GONE
+
+            // 삭제 확인 메시지 설정
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("시간표 삭제")
+                .setMessage("시간표를 삭제하시겠습니까?")
+                .setPositiveButton("확인",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        // 시간표 삭제하기 (API)
+
+
+                        // empty timetable로 이동
+                        val emptyTimetable = EmptyTimetable()
+                        requireActivity().supportFragmentManager.beginTransaction()
+                            .replace(R.id.fragmentContainerView, emptyTimetable)
+                            .addToBackStack(null) // 이전 fragment로 돌아갈 수 있도록 스택에 추가
+                            .commit()
+
+                        // timetable edit button 숨기기
+                        val editButton = requireActivity().findViewById<ImageButton>(R.id.editButton)
+                        editButton?.visibility = View.GONE
+                    })
+                .setNegativeButton("취소",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        Log.d("TAB", "취소 클릭")
+                    })
+            // 삭제 확인 메시지 띄우기
+            builder.show()
+        }
     }
 
     companion object {

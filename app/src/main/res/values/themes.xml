@@ -3,6 +3,7 @@
     <style name="Base.Theme.SKKedula" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:timePickerStyle">@style/MyTimePickerTheme</item>
     </style>
 
     <style name="Theme.SKKedula" parent="Base.Theme.SKKedula">
@@ -15,5 +16,13 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+    </style>
+
+    <style name="spinnerTheme">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="MyTimePickerTheme" parent="android:Widget.Material.Light.TimePicker">
+        <item name="android:timePickerMode">spinner</item>
     </style>
 </resources>
