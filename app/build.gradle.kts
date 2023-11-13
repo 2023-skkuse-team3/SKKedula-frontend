@@ -66,6 +66,9 @@ dependencies {
     implementation("io.github.ParkSangGwon:intervaltimepicker:1.0.0")
     implementation("nl.joery.timerangepicker:timerangepicker:1.0.0")
     // end
+    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("androidx.fragment:fragment-ktx:1.2.5")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
