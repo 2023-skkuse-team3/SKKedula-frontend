@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
+import edu.skku.cs.skkedula.api.ApiObject
 import edu.skku.cs.skkedula.R
 
 
@@ -27,12 +27,10 @@ class EmptyTimetable : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private var everytimeUrl: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -46,8 +44,9 @@ class EmptyTimetable : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // apply navigation bar
-        val navController = view.findNavController()
+        // api interface 가져오기
+        val callSearchCourse = ApiObject.service.searchCourse("introduction")
+
 
         // 버튼 클릭 시 Fragment 전환
         val button = view.findViewById<Button>(R.id.addDirectly)
@@ -67,6 +66,11 @@ class EmptyTimetable : Fragment() {
         }
 
         urlButton.setOnClickListener {
+            // url 가져오기
+            val urlInput = view.findViewById<EditText>(R.id.InputUrl)
+
+            // url 보내기
+
             // timetable fragment로 교체
             val timetable = Timetable()
             requireActivity().supportFragmentManager.beginTransaction()

@@ -1,4 +1,4 @@
-package edu.skku.cs.skkedula.API
+package edu.skku.cs.skkedula.api
 
 import com.google.gson.annotations.SerializedName
 data class Course(
