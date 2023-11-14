@@ -18,29 +18,47 @@ class RecyclerViewAdapter(val itemList: List<Course>): RecyclerView.Adapter<Recy
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.courseName.text = itemList[position].courseName.split('\n')[0]
         holder.professor.text = itemList[position].professor
-        if (itemList[position].roomNum != "")
+        if (itemList[position].roomNum != null)
             holder.roomNum.text = itemList[position].roomNum
+        else
+            holder.roomNum.text = "미지정"
         holder.courseType.text = itemList[position].classType
-        holder.time.text = itemList[position].time
+        holder.time.text = formatTimeString(itemList[position].time)
     }
 
     private fun formatTimeString(input: String): String {
-        val parts = input.split(", ")
-        val formattedTimes = parts.map { part ->
-            val (count, times) = part.split("_")
-            val dayString = when (count.toInt()) {
-                1 -> "월"
-                2 -> "화"
-                3 -> "수"
-                4 -> "목"
-                5 -> "금"
-                else -> " "
-            }
-            val startTime = times.substring(0, 2) + ":" + times.substring(2, 4)
-            val endTime = times.substring(4, 6) + ":" + times.substring(6, 8)
-            "$dayString $startTime-$endTime"
+        if (input == null) {
+            return "미지정"
         }
-        return formattedTimes.joinToString("/ ")
+        if (input.contains(',')) {
+            val parts = input.split(", ")
+            val formattedTimes = parts.map { part ->
+                val (count, times) = part.split("_")
+                val dayString = when (count.toInt()) {
+                    1 -> "월"
+                    2 -> "화"
+                    3 -> "수"
+                    4 -> "목"
+                    5 -> "금"
+                    else -> " "
+                }
+                val startTime = times.substring(0, 2) + ":" + times.substring(2, 4)
+                val endTime = times.substring(4, 6) + ":" + times.substring(6, 8)
+                "$dayString $startTime-$endTime"
+            }
+            return formattedTimes.joinToString("/ ")
+        } else if (input.length > 9) {
+            var formattedString = input.replace("1_", "월 ")
+            formattedString = formattedString.replace("2_", "화 ")
+            formattedString = formattedString.replace("3_", "수 ")
+            formattedString = formattedString.replace("4_", "목 ")
+            formattedString = formattedString.replace("5_", "금 ")
+            formattedString = formattedString.substring(0, 4) + ":" + formattedString.substring(4, 6) + "-" + formattedString.substring(6, 8) + ":" + formattedString.substring(8, 10)
+
+            return formattedString
+        } else {
+            return input
+        }
     }
 
     override fun getItemCount(): Int {

@@ -9,7 +9,7 @@ data class CourseInfo(
     @SerializedName("start_time")
     val startTime: List<String>,
     @SerializedName("end_time")
-    val endTime: String,
+    val endTime: List<String>,
     @SerializedName("day_of_week")
     val dayOfWeek: List<String>,
     @SerializedName("building_num")

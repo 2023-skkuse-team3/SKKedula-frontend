@@ -62,7 +62,7 @@
     </androidx.cardview.widget.CardView>
 
     <EditText
-        android:id="@+id/editTextText2"
+        android:id="@+id/scheduleName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -95,7 +95,7 @@
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
+        app:layout_constraintTop_toBottomOf="@+id/scheduleName" />
 
     <Spinner
         android:id="@+id/daySpinner"

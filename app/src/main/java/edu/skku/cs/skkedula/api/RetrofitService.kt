@@ -8,14 +8,16 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+// 강의 검색을 위한 data class
 data class CourseName(@SerializedName("course_name") val courseName: String)
+data class Professor(@SerializedName("professor") val professor: String)
 
 interface RetrofitService {
     @POST("/timetable/searchByCourse")
     fun searchCourse(@Body searchQuery: CourseName) : Call<List<Course>>
 
     @POST("/timetable/searchByProfessor/")
-    fun searchCourseByProfessor(@Query("searchQuery") searchQuery: String) : Call<List<Course>>
+    fun searchCourseByProfessor(@Body searchQuery: Professor) : Call<List<Course>>
 
     @GET("/{userId}/timetables/courses")
     fun getUserCourses(@Path("userId") userId: String): Call<List<Course>>

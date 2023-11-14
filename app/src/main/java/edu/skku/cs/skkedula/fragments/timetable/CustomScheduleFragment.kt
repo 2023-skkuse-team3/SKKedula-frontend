@@ -8,11 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.children
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import edu.skku.cs.skkedula.R
+import edu.skku.cs.skkedula.api.CourseInfo
 import edu.skku.cs.skkedula.databinding.FragmentCustomScheduleBinding
 import java.util.Calendar
 
@@ -48,8 +50,11 @@ class CustomScheduleFragment : Fragment() {
         // Inflate the layout for this fragment
         // val view = inflater.inflate(R.layout.fragment_custom_schedule, container, false)
         binding=FragmentCustomScheduleBinding.inflate(inflater)
+        val scheduleName = binding.scheduleName
+        val location = binding.location
         val startTime = binding.startTime
         val endTime = binding.endTime
+        val day = binding.daySpinner
         val addBtn = binding.addSchedule
 
         startTime.setOnClickListener {
@@ -82,8 +87,28 @@ class CustomScheduleFragment : Fragment() {
             // 종료 시간 저장
         }
 
+        // 추가하기 버튼
         addBtn.setOnClickListener {
+            if (!scheduleName.text.toString().isNullOrEmpty() && !location.text.toString().isNullOrEmpty()) {
+                // 제목과 장소를 모두 입력했을 때
+                try {
+                    val roomNum = location.text.toString().toInt()
+                    val newSchedule = CourseInfo(courseName = scheduleName.text.toString(), professor = "a", startTime = listOf(startTimeString), endTime = listOf(endTimeString), dayOfWeek = listOf(day.toString()), buildingNum = roomNum)
 
+                } catch (e: NumberFormatException) {
+                    Toast.makeText(requireContext(), "유효한 강의실 번호가 아닙니다.", Toast.LENGTH_SHORT).show()
+                }
+
+                val newSchedule = CourseInfo(courseName = scheduleName.text.toString(), professor = "a", startTime = listOf(startTimeString), endTime = listOf(endTimeString), dayOfWeek = listOf(day.toString()), buildingNum = location.text.toString().toInt())
+
+                // 강의 추가 API 호출, 성공 시 viewmodel에 추가
+                timetableViewModel.addNewCourse(newSchedule)
+
+
+                Log.d("tag", "not empty")
+            } else {
+                Toast.makeText(requireContext(), "모든 정보를 입력해주세요.", Toast.LENGTH_SHORT).show()
+            }
         }
 
         return binding.root
