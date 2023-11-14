@@ -1,15 +1,23 @@
 package edu.skku.cs.skkedula.fragments.timetable
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil.isValidUrl
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import edu.skku.cs.skkedula.api.ApiObject
 import edu.skku.cs.skkedula.R
+import edu.skku.cs.skkedula.api.Course
+import edu.skku.cs.skkedula.api.CourseInfo
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -44,9 +52,6 @@ class EmptyTimetable : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // api interface 가져오기
-        val callSearchCourse = ApiObject.service.searchCourse("introduction")
-
 
         // 버튼 클릭 시 Fragment 전환
         val button = view.findViewById<Button>(R.id.addDirectly)
@@ -69,19 +74,50 @@ class EmptyTimetable : Fragment() {
             // url 가져오기
             val urlInput = view.findViewById<EditText>(R.id.InputUrl)
 
-            // url 보내기
+            if (isValidUrl(urlInput.text.toString())) {
+                // 유효한 URL일 때
 
-            // timetable fragment로 교체
-            val timetable = Timetable()
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainerView, timetable)
-                .commit()
+                // api interface 가져오기
+                val postUserCourses = ApiObject.service.postUserCourses("1")
 
-            // timetable edit button 표시
-            val editButton = requireActivity().findViewById<ImageButton>(R.id.editButton)
-            editButton?.visibility = View.VISIBLE
+                // url post
+                postUserCourses.clone().enqueue(object: Callback<List<CourseInfo>> {
+                    override fun onResponse(call: Call<List<CourseInfo>>, response: Response<List<CourseInfo>>) {
+                        if(response.isSuccessful.not()){
+                            return
+                        }
 
-            // 사용자의 강의 목록 불러와 시간표에 추가하기
+                        response.body()?.let{
+                            Log.d("OK", it.toString())
+                            it.forEachIndexed { index, course ->
+                                Log.d("DATA", "[$index] date = ${course.courseName}, name = ${course.professor}")
+                            }
+                        } ?: run {
+                            Log.d("NG", "body is null")
+                        }
+                    }
+
+                    override fun onFailure(call: Call<List<CourseInfo>>, t: Throwable) {
+                        Log.e("ERROR", t.toString())
+                        Toast.makeText(context, t.toString(), Toast.LENGTH_LONG).show()
+                    }
+
+                })
+
+                // timetable fragment로 교체
+                val timetable = Timetable()
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainerView, timetable)
+                    .commit()
+
+                // timetable edit button 표시
+                val editButton = requireActivity().findViewById<ImageButton>(R.id.editButton)
+                editButton?.visibility = View.VISIBLE
+
+                // 사용자의 강의 목록 불러와 시간표에 추가하기
+            } else {
+                // 유효하지 않은 URL입니다. 사용자에게 알림 또는 처리를 수행하세요.
+            }
         }
     }
 

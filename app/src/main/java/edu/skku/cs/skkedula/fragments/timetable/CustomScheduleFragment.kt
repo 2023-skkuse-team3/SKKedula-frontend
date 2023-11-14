@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.children
 import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import edu.skku.cs.skkedula.R
 import edu.skku.cs.skkedula.databinding.FragmentCustomScheduleBinding
@@ -33,6 +34,7 @@ class CustomScheduleFragment : Fragment() {
     var endTimeString = ""
 
     lateinit var binding:FragmentCustomScheduleBinding
+    private val timetableViewModel: TimetableViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,12 +1,23 @@
 package edu.skku.cs.skkedula.fragments.timetable
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.view.animation.TranslateAnimation
+import android.widget.EditText
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
+import androidx.transition.ChangeBounds
+import androidx.transition.TransitionManager
 import edu.skku.cs.skkedula.R
 import edu.skku.cs.skkedula.fragments.map.MapViewModel
 import org.w3c.dom.Text
@@ -45,6 +56,36 @@ class CourseDetail : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val startPoint = view.findViewById<TextView>(R.id.startPointValue)
+
+        startPoint.setOnClickListener {
+            val cardView = requireActivity().findViewById<FragmentContainerView>(R.id.card)
+            val startPoint = view.findViewById<TextView>(R.id.startPointValue)
+            val constraintLayout = requireActivity().findViewById<ConstraintLayout>(R.id.main_constraint)
+
+            // 아래로 100dp 이동하는 애니메이션
+            val translateY = 100.dpToPx().toFloat()
+
+            // ConstraintSet을 생성하고 시작 상태를 설정
+            val startConstraintSet = ConstraintSet()
+            startConstraintSet.clone(constraintLayout)
+
+            // ConstraintSet을 생성하고 종료 상태를 설정
+            val endConstraintSet = ConstraintSet()
+            endConstraintSet.clone(constraintLayout)
+            endConstraintSet.connect(cardView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, -500)
+            endConstraintSet.setVerticalBias(cardView.id, translateY)
+
+            // Transition을 설정하여 애니메이션 적용
+            val transition = ChangeBounds()
+            transition.duration = 500 // 애니메이션 지속 시간 (밀리초)
+            TransitionManager.beginDelayedTransition(constraintLayout, transition)
+
+            // 종료 상태의 ConstraintSet을 적용하여 애니메이션 적용
+            endConstraintSet.applyTo(constraintLayout)
+            Log.d("Animation", "card down")
+        }
+
         // 도착지 string 초기화
         var destination = ""
 
@@ -65,6 +106,12 @@ class CourseDetail : Fragment() {
             val destinationLabel = view.findViewById<TextView>(R.id.destinationInfo)
             destinationLabel.text = destination
         }
+    }
+
+    // dp를 픽셀로 변환하는 확장 함수
+    private fun Int.dpToPx(): Int {
+        val scale = resources.displayMetrics.density
+        return (this * scale + 0.5f).toInt()
     }
 
     companion object {

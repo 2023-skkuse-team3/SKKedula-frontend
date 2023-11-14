@@ -2,17 +2,20 @@ package edu.skku.cs.skkedula.api
 
 import com.google.gson.annotations.SerializedName
 data class Course(
-    @SerializedName("course_id")
+    @SerializedName("Course_ID")
     val courseId: String,
-    @SerializedName("course_name")
+    @SerializedName("Course_name")
     val courseName: String,
+    @SerializedName("Professor")
     val professor: String,
-    @SerializedName("time_start")
-    val timeStart: String,
-    @SerializedName("time_total")
-    val timeTotal: Int,
-    @SerializedName("room_num")
-    val roomNum: Int,
+    @SerializedName("Time")
+    val time: String,
+    @SerializedName("Room_num")
+    val roomNum: String,
+    @SerializedName("Class_type")
+    val classType: String,
+    @SerializedName("Semester")
     val semester: String,
+    @SerializedName("Year")
     val year: Int
 )
