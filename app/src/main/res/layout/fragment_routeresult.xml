@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".SkkedulaActivity">
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/map3"
+        android:name="com.naver.maps.map.MapFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline6" />
 
     <TextView
         android:id="@+id/startText"
@@ -163,7 +172,7 @@
         app:layout_constraintGuide_percent="0.025" />
 
     <ImageView
-        android:id="@+id/imageButton3"
+        android:id="@+id/onbookmarkButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -171,5 +180,21 @@
         app:layout_constraintBottom_toBottomOf="@+id/endText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/startText" />
+
+    <android.widget.Button
+        android:id="@+id/entrance2"
+        android:layout_width="110dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:background="#F08676"
+        android:fontFamily="@font/poppins_regular"
+        android:fontWeight="600"
+        android:text="건물입구"
+        android:textColor="#FFFFFF"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/map3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
