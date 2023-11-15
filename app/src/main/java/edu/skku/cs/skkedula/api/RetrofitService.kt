@@ -30,4 +30,13 @@ interface RetrofitService {
 
     @POST("timetable/addSelectedCourse")
     fun addCourseToTimetable(@Body body: AddCourseBody) : Call<Message>
+
+    @GET("studyspaces")
+    fun getstudyspaces(@Path("userId") userId: String): Call<List<Studyspaces>>
+
+    @GET("buildings")
+    fun getbuildings(@Path("userId") userId: String): Call<List<Buildings>>
+
+    @POST("searchBybuildings")
+    fun searchbuildings(@Query("searchQuery") searchQuery: String) : Call<List<Buildings>>
 }
