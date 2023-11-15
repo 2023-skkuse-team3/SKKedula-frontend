@@ -23,4 +23,13 @@ interface RetrofitService {
     // URL 보낸 후 유저 강의 정보 가져오기
     @POST("/{userId}/timetables/courses")
     fun postUserCourses(@Path("userId") userId: String): Call<List<CourseInfo>>
+
+    @GET("studyspaces")
+    fun getstudyspaces(@Path("userId") userId: String): Call<List<Studyspaces>>
+
+    @GET("buildings")
+    fun getbuildings(@Path("userId") userId: String): Call<List<Buildings>>
+
+    @POST("searchBybuildings")
+    fun searchbuildings(@Query("searchQuery") searchQuery: String) : Call<List<Buildings>>
 }

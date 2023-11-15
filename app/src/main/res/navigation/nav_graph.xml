@@ -39,4 +39,9 @@
             android:id="@+id/action_bookmarkFragment_to_mapFragment"
             app:destination="@id/mapFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/RoutesearchFragment"
+        android:name="edu.skku.cs.skkedula.fragments.map.RoutesearchFragment"
+        android:label="RoutesearchFragment"
+        tools:layout="@layout/fragment_routesearch" />
 </navigation>

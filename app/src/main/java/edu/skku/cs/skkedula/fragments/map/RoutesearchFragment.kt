@@ -43,5 +43,13 @@ class RoutesearchFragment : Fragment() {
         val editend = view.findViewById<EditText>(R.id.editend)
         editstart.addTextChangedListener { mapViewModel.startText.value = it.toString() }
         editend.addTextChangedListener { mapViewModel.endText.value = it.toString() }
+
+        arguments?.getString("editstart")?.let {
+            view.findViewById<EditText>(R.id.editstart).setText(it)
+        }
+
+        arguments?.getString("editend")?.let {
+            view.findViewById<EditText>(R.id.editend).setText(it)
+        }
     }
 }

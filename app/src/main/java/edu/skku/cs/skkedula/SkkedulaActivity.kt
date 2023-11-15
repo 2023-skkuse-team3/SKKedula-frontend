@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import android.widget.Toolbar
@@ -23,6 +24,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.naver.maps.map.MapFragment
 import edu.skku.cs.skkedula.databinding.ActivityMainBinding
 import edu.skku.cs.skkedula.fragments.timetable.EmptyTimetable
 
@@ -77,11 +79,16 @@ class SkkedulaActivity : AppCompatActivity() {
                 MotionEvent.ACTION_DOWN -> {
                     initialY = event.y
                 }
+
                 MotionEvent.ACTION_MOVE -> {
                     val displacement = event.y - initialY
                     if (displacement > 0 && !isCardHidden) {
                         // Swipe down
-                        val spring = SpringAnimation(cardView, DynamicAnimation.TRANSLATION_Y, cardView.translationY)
+                        val spring = SpringAnimation(
+                            cardView,
+                            DynamicAnimation.TRANSLATION_Y,
+                            cardView.translationY
+                        )
 
                         spring.addEndListener { _, _, _, _ ->
                             // Card is hidden
