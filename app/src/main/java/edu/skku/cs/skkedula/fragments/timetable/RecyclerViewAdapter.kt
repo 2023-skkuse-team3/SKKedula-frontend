@@ -1,5 +1,6 @@
 package edu.skku.cs.skkedula.fragments.timetable
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import edu.skku.cs.skkedula.R
 import edu.skku.cs.skkedula.api.Course
 
-class RecyclerViewAdapter(val itemList: List<Course>): RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
+class RecyclerViewAdapter(val itemList: List<Course>, val onClick: (Course) -> Unit): RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.recyclerview_item, parent, false)
         return ViewHolder(view)
@@ -24,6 +25,9 @@ class RecyclerViewAdapter(val itemList: List<Course>): RecyclerView.Adapter<Recy
             holder.roomNum.text = "미지정"
         holder.courseType.text = itemList[position].classType
         holder.time.text = formatTimeString(itemList[position].time)
+        holder.addBtn.setOnClickListener {
+            onClick(itemList[position])
+        }
     }
 
     private fun formatTimeString(input: String): String {

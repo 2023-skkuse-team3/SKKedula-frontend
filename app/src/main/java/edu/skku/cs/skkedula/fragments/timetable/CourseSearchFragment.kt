@@ -94,7 +94,9 @@ class CourseSearchFragment : Fragment() {
 
                             courseList = tempCourseList
 
-                            val adapter = RecyclerViewAdapter(courseList)
+                            val adapter = RecyclerViewAdapter(courseList){
+                                course -> Toast.makeText(requireActivity(), "${course.courseId} 클릭!", Toast.LENGTH_SHORT).show()
+                            }
                             adapter.notifyDataSetChanged()
 
                             courseListView.adapter = adapter

@@ -9,10 +9,13 @@ import android.webkit.URLUtil.isValidUrl
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import edu.skku.cs.skkedula.api.ApiObject
 import edu.skku.cs.skkedula.R
+import edu.skku.cs.skkedula.api.ApiObject8000
 import edu.skku.cs.skkedula.api.Course
 import edu.skku.cs.skkedula.api.CourseInfo
 import retrofit2.Call
@@ -31,11 +34,8 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class EmptyTimetable : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    private var everytimeUrl: String = ""
+    private val timetableViewModel: TimetableViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +59,8 @@ class EmptyTimetable : Fragment() {
 
         button.setOnClickListener {
 
+            timetableViewModel.setExampleTimetable()
+
             // timetable edit button 표시
             val editButton = requireActivity().findViewById<ImageButton>(R.id.editButton)
             editButton?.visibility = View.VISIBLE
@@ -74,15 +76,19 @@ class EmptyTimetable : Fragment() {
             // url 가져오기
             val urlInput = view.findViewById<EditText>(R.id.InputUrl)
 
+            val url = urlInput.text.toString()
+            val isValid = isValidUrl(url)
+            Log.d("URL", "$isValid")
+
+            // 유효한 URL일 때
             if (isValidUrl(urlInput.text.toString())) {
-                // 유효한 URL일 때
 
                 // api interface 가져오기
-                val postUserCourses = ApiObject.service.postUserCourses("1")
-
+                val postUserCourses = ApiObject8000.service.postUserCourses("1")
+                Log.d("API", "api 호출")
                 // url post
-                postUserCourses.clone().enqueue(object: Callback<List<CourseInfo>> {
-                    override fun onResponse(call: Call<List<CourseInfo>>, response: Response<List<CourseInfo>>) {
+                postUserCourses.clone().enqueue(object: Callback<List<Course>> {
+                    override fun onResponse(call: Call<List<Course>>, response: Response<List<Course>>) {
                         if(response.isSuccessful.not()){
                             return
                         }
@@ -92,27 +98,29 @@ class EmptyTimetable : Fragment() {
                             it.forEachIndexed { index, course ->
                                 Log.d("DATA", "[$index] date = ${course.courseName}, name = ${course.professor}")
                             }
+
+                            // timetable fragment로 교체
+                            val timetable = Timetable()
+                            requireActivity().supportFragmentManager.beginTransaction()
+                                .replace(R.id.fragmentContainerView, timetable)
+                                .commit()
+
+                            // timetable edit button 표시
+                            val editButton = requireActivity().findViewById<ImageButton>(R.id.editButton)
+                            editButton?.visibility = View.VISIBLE
+
                         } ?: run {
                             Log.d("NG", "body is null")
                         }
                     }
 
-                    override fun onFailure(call: Call<List<CourseInfo>>, t: Throwable) {
+                    override fun onFailure(call: Call<List<Course>>, t: Throwable) {
                         Log.e("ERROR", t.toString())
                         Toast.makeText(context, t.toString(), Toast.LENGTH_LONG).show()
                     }
 
                 })
 
-                // timetable fragment로 교체
-                val timetable = Timetable()
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainerView, timetable)
-                    .commit()
-
-                // timetable edit button 표시
-                val editButton = requireActivity().findViewById<ImageButton>(R.id.editButton)
-                editButton?.visibility = View.VISIBLE
 
                 // 사용자의 강의 목록 불러와 시간표에 추가하기
             } else {

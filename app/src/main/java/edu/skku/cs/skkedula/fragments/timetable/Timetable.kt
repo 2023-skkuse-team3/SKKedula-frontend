@@ -7,9 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
+import androidx.transition.ChangeBounds
+import androidx.transition.TransitionManager
 import com.islandparadise14.mintable.MinTimeTableView
 import com.islandparadise14.mintable.model.ScheduleDay
 import com.islandparadise14.mintable.model.ScheduleEntity
@@ -42,18 +47,95 @@ class Timetable : Fragment() {
         // user, courseName으로 나머지 정보 불러와 viewmodel에 정보 저장
     }
 
-    fun addSchedule(table: View,name: String, day: String, roomInfo: String, startTime: String, endTime: String) {
-        val schedule = ScheduleEntity(
-            32, //originId
-            name, //scheduleName
-            roomInfo, //roomInfo
-            ScheduleDay.TUESDAY, //ScheduleDay object (MONDAY ~ SUNDAY)
-            startTime, //startTime format: "HH:mm"
-            endTime, //endTime  format: "HH:mm"
-            "#F08676", //backgroundColor (optional)
-            "#FFFFFF" //textcolor (optional)
-        )
-        scheduleList.add(schedule)
+    private fun formatTimeString(input: String): String {
+        if (input == null) {
+            return "미지정"
+        }
+        if (input.contains(',')) {
+            val parts = input.split(", ")
+            val formattedTimes = parts.map { part ->
+                val (count, times) = part.split("_")
+                val dayString = when (count.toInt()) {
+                    1 -> "월"
+                    2 -> "화"
+                    3 -> "수"
+                    4 -> "목"
+                    5 -> "금"
+                    else -> " "
+                }
+                val startTime = times.substring(0, 2) + ":" + times.substring(2, 4)
+                val endTime = times.substring(4, 6) + ":" + times.substring(6, 8)
+                "$dayString $startTime-$endTime"
+            }
+            return formattedTimes.joinToString("/ ")
+        } else if (input.length > 9) {
+            var formattedString = input.replace("1_", "월 ")
+            formattedString = formattedString.replace("2_", "화 ")
+            formattedString = formattedString.replace("3_", "수 ")
+            formattedString = formattedString.replace("4_", "목 ")
+            formattedString = formattedString.replace("5_", "금 ")
+            formattedString = formattedString.substring(0, 4) + ":" + formattedString.substring(4, 6) + "-" + formattedString.substring(6, 8) + ":" + formattedString.substring(8, 10)
+
+            return formattedString
+        } else {
+            return input
+        }
+    }
+
+    private fun formatRoomNum(input: String): String {
+        if (input.length == 5) {
+            val buildingName = when (input.substring(0,2)) {
+                "21" -> "제1공학관 "
+                "22" -> "제1공학관 "
+                "23" -> "제1공학관 "
+                "25" -> "제2공학관 "
+                "26" -> "제2공학관 "
+                "27" -> "제2공학관 "
+                else -> ""
+            }
+
+            if (buildingName.isNotEmpty()) {
+                val floor = when (input[2]) {
+                    '1' -> "1층 "
+                    '2' -> "2층 "
+                    '3' -> "3층 "
+                    '4' -> "4층 "
+                    '5' -> "5층 "
+                    '6' -> "6층 "
+                    '7' -> "7층 "
+                    else -> ""
+                }
+
+                return buildingName + floor + input
+            }
+
+            return input
+        } else if (input.length == 6) {
+            val buildingName = when (input.substring(0,2)) {
+                "40" -> "반도체관 "
+                "33" -> "화학관 "
+                else -> ""
+            }
+
+            if (buildingName.isNotEmpty()) {
+                val floor = when (input[3]) {
+                    '1' -> "1층 "
+                    '2' -> "2층 "
+                    '3' -> "3층 "
+                    '4' -> "4층 "
+                    '5' -> "5층 "
+                    '6' -> "6층 "
+                    '7' -> "7층 "
+                    else -> ""
+                }
+
+                return buildingName + floor + input
+            }
+
+            return input
+        }
+
+        return input
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,34 +160,94 @@ class Timetable : Fragment() {
         val table = view.findViewById<MinTimeTableView>(R.id.table)
         table.initTable(day)
 
-        val schedule = ScheduleEntity(
-            32, //originId
-            "소프트웨어공학개론", //scheduleName
-            "제2공학관 3층 26312", //roomInfo
-            ScheduleDay.TUESDAY, //ScheduleDay object (MONDAY ~ SUNDAY)
-            "8:20", //startTime format: "HH:mm"
-            "10:30", //endTime  format: "HH:mm"
-            "#F08676", //backgroundColor (optional)
-            "#FFFFFF" //textcolor (optional)
-        )
+        timetableViewModel.userCourseList.observe(viewLifecycleOwner) { courseList ->
+            Log.d("Function", "observe userCourseList")
+            scheduleList.clear()
+            Log.d("DATA", "Course List $courseList")
+            courseList.mapIndexed { index, course ->
 
-        scheduleList.add(schedule)
+                val formattedTimeString = formatTimeString(course.time)
+                Log.d("DATA", "$course")
+                formattedTimeString.split("/ ").map {
+
+                    val day = when(it.substring(0, 1)) {
+                        "월" -> ScheduleDay.MONDAY
+                        "화" -> ScheduleDay.TUESDAY
+                        "수" -> ScheduleDay.WEDNESDAY
+                        "목" -> ScheduleDay.THURSDAY
+                        "금" -> ScheduleDay.FRIDAY
+                        else -> ScheduleDay.MONDAY
+                    }
+
+                    val schedule = ScheduleEntity(
+                        1, //originId
+                        course.courseName, //scheduleName
+                        formatRoomNum(course.roomNum), //roomInfo
+                        day, //ScheduleDay object (MONDAY ~ SUNDAY)
+                        "8:20", //startTime format: "HH:mm"
+                        "10:30", //endTime  format: "HH:mm"
+                        "#F08676", //backgroundColor (optional)
+                        "#FFFFFF" //textcolor (optional)
+                    )
+
+                    scheduleList.add(schedule)
+                }
+            }
+            Log.d("DATA", "$scheduleList")
+            table.updateSchedules(scheduleList)
+        }
 
         val buttomUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.bottom_up)
         val targetView = requireActivity().findViewById<FragmentContainerView>(R.id.card)
         table.setOnScheduleClickListener(
             object : OnScheduleClickListener {
                 override fun scheduleClicked(entity: ScheduleEntity) {
-                    // apply navigation bar
-                    val navController = Navigation.findNavController(requireActivity(), R.id.card)
-                    navController.navigate(R.id.courseDetail)
 
-                    // card에 띄울 강의 정보 설정
-                    setTempCourseInfo(entity.scheduleName, entity.roomInfo)
+                    if (timetableViewModel.isSelectingStartPoint.value == true) {
+                        // 출발지 설정하는 경우
+                        // 출발지 string 설정
+                        timetableViewModel.setStartPoint(entity.roomInfo)
 
-                    // card 띄우기
-                    targetView.startAnimation(buttomUpAnimation)
-                    targetView.visibility = View.VISIBLE
+                        // 출발지 설정 후 disable
+                        timetableViewModel.disableStartPoint()
+
+                        // 카드 올리기 start
+                        val cardView = requireActivity().findViewById<FragmentContainerView>(R.id.card)
+                        val constraintLayout = requireActivity().findViewById<ConstraintLayout>(R.id.main_constraint)
+
+                        // ConstraintSet을 생성하고 시작 상태를 설정
+                        val startConstraintSet = ConstraintSet()
+                        startConstraintSet.clone(constraintLayout)
+
+                        // ConstraintSet을 생성하고 종료 상태를 설정
+                        val endConstraintSet = ConstraintSet()
+                        endConstraintSet.clone(constraintLayout)
+                        endConstraintSet.connect(cardView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0)
+
+                        // Transition을 설정하여 애니메이션 적용
+                        val transition = ChangeBounds()
+                        transition.duration = 500 // 애니메이션 지속 시간 (밀리초)
+                        TransitionManager.beginDelayedTransition(constraintLayout, transition)
+
+                        // 종료 상태의 ConstraintSet을 적용하여 애니메이션 적용
+                        endConstraintSet.applyTo(constraintLayout)
+                        // 카드 올리기 end
+
+                    } else {
+                        // 강의 정보 카드 띄우는 경우
+                        // 출발지 string 초기화
+                        timetableViewModel.setStartPoint("시간표에서 현위치 선택하기(기본: 현위치)")
+                        // apply navigation bar
+                        val navController = Navigation.findNavController(requireActivity(), R.id.card)
+                        navController.navigate(R.id.courseDetail)
+
+                        // card에 띄울 강의 정보 설정
+                        setTempCourseInfo(entity.scheduleName, entity.roomInfo)
+
+                        // card 띄우기
+                        targetView.startAnimation(buttomUpAnimation)
+                        targetView.visibility = View.VISIBLE
+                    }
                 }
             }
         )

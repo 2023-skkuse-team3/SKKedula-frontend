@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import edu.skku.cs.skkedula.R
+import edu.skku.cs.skkedula.api.Course
 import edu.skku.cs.skkedula.api.CourseInfo
 import edu.skku.cs.skkedula.databinding.FragmentCustomScheduleBinding
 import java.util.Calendar
@@ -99,10 +100,10 @@ class CustomScheduleFragment : Fragment() {
                     Toast.makeText(requireContext(), "유효한 강의실 번호가 아닙니다.", Toast.LENGTH_SHORT).show()
                 }
 
-                val newSchedule = CourseInfo(courseName = scheduleName.text.toString(), professor = "a", startTime = listOf(startTimeString), endTime = listOf(endTimeString), dayOfWeek = listOf(day.toString()), buildingNum = location.text.toString().toInt())
+                val newSchedule = Course(courseId = "", courseName = scheduleName.text.toString(), professor = "a", time = "", roomNum = location.text.toString(), classType = "", semester = "", year = 3)
 
                 // 강의 추가 API 호출, 성공 시 viewmodel에 추가
-                timetableViewModel.addNewCourse(newSchedule)
+                timetableViewModel.addNewCourseToTimetable(newSchedule)
 
 
                 Log.d("tag", "not empty")

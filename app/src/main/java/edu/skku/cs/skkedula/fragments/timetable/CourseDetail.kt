@@ -59,6 +59,10 @@ class CourseDetail : Fragment() {
         val startPoint = view.findViewById<TextView>(R.id.startPointValue)
 
         startPoint.setOnClickListener {
+            // startpoint 클릭 활성화
+            timetableViewModel.enableStartPoint()
+
+            // card view 살짝 내리기
             val cardView = requireActivity().findViewById<FragmentContainerView>(R.id.card)
             val startPoint = view.findViewById<TextView>(R.id.startPointValue)
             val constraintLayout = requireActivity().findViewById<ConstraintLayout>(R.id.main_constraint)
@@ -74,7 +78,7 @@ class CourseDetail : Fragment() {
             val endConstraintSet = ConstraintSet()
             endConstraintSet.clone(constraintLayout)
             endConstraintSet.connect(cardView.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, -500)
-            endConstraintSet.setVerticalBias(cardView.id, translateY)
+            //endConstraintSet.setVerticalBias(cardView.id, translateY)
 
             // Transition을 설정하여 애니메이션 적용
             val transition = ChangeBounds()
@@ -105,6 +109,12 @@ class CourseDetail : Fragment() {
             // 도착지 표시
             val destinationLabel = view.findViewById<TextView>(R.id.destinationInfo)
             destinationLabel.text = destination
+        }
+
+        // 출발지 표시
+        timetableViewModel.startPoint.observe(viewLifecycleOwner) { text ->
+            val startPoint = view.findViewById<TextView>(R.id.startPointValue)
+            startPoint.text = text
         }
     }
 
