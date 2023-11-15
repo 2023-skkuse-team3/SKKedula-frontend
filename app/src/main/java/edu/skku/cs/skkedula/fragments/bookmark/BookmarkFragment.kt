@@ -5,9 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
-import edu.skku.cs.skkedula.R
+import androidx.recyclerview.widget.RecyclerView
 import edu.skku.cs.skkedula.databinding.FragmentBookmarkBinding
 
 class BookmarkFragment : Fragment() {
@@ -23,17 +21,19 @@ class BookmarkFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        //val dashboardViewModel = ViewModelProvider(this).get(MapViewModel::class.java)
-
+        // Inflate the layout for this fragment
         _binding = FragmentBookmarkBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-        /*
-        val textView: TextView = binding.textMap
-        MapViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }*/
-        return root
+        var items = arrayListOf<Bookmark>()
+        items.add(Bookmark("1", "2"))
+        items.add(Bookmark("1", "2"))
+        items.add(Bookmark("1", "2"))
+
+        val listAdapter = BookmarkAdapter(requireContext(), items)
+        val mainList = binding.scrollview
+        mainList.adapter = listAdapter
+
+        val rootView = binding.root
+        return rootView
     }
 
     override fun onDestroyView() {
