@@ -1,5 +1,6 @@
 package edu.skku.cs.skkedula
 
+import android.app.Application
 import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
@@ -22,14 +23,15 @@ import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
-    // todo: implement auth
-    private fun isValid(username: String, password: String): Boolean {
-        if (username.equals("admin") && password.equals("admin")) return true
-        return false
+    class loginData: Application() {
+        companion object {
+            var userId: String = ""
+        }
     }
 
-    private fun changepg() {
+    private fun changepg(username: String) {
         val intent = Intent(this, SkkedulaActivity::class.java)
+        intent.putExtra("ID", username)
         startActivity(intent)
     }
 
@@ -67,8 +69,9 @@ class LoginActivity : AppCompatActivity() {
             )
             val loginUser_ = ApiObject.service.loginUser(log)
 
-            // 다음 장 바로 넘어가기 위한 함수 호출임!! 로그인 테스트 시 지우기
-            //changepg()
+            // 다음 장 바로 넘어가기 위한 코드, 로그인 테스트 시 지우기
+            loginData.userId = username
+            changepg(username)
 
             // url post
             loginUser_.clone().enqueue(object: Callback<LoginResponse> {
@@ -86,7 +89,8 @@ class LoginActivity : AppCompatActivity() {
                     Log.d("DATA", "code=${response.code()}, message = $statusmessage")
                     errorMessageTextView.text = ""
                     finish()
-                    changepg()
+                    loginData.userId = username
+                    changepg(username)
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {

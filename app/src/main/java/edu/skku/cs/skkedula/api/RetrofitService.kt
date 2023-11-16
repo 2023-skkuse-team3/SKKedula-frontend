@@ -3,6 +3,7 @@ package edu.skku.cs.skkedula.api
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -45,4 +46,13 @@ interface RetrofitService {
 
     @POST("searchBybuildings")
     fun searchbuildings(@Query("searchQuery") searchQuery: String) : Call<List<Buildings>>
+
+    @POST("/savepath")
+    fun savePath(@Body savepath: Savepath): Call<SavepathResponse>
+
+    @POST("/getpath")
+    fun getPath(@Body getpath: Getpath): Call<GetpathResponse>
+
+    @DELETE("/deletepath")
+    fun deletePath(@Body deletepath: Deletepath): Call<DeletepathResponse>
 }

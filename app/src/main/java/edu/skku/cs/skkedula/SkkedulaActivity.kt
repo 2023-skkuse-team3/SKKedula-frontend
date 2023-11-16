@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -26,6 +27,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.naver.maps.map.MapFragment
 import edu.skku.cs.skkedula.databinding.ActivityMainBinding
+import edu.skku.cs.skkedula.fragments.bookmark.BookmarkFragment
 import edu.skku.cs.skkedula.fragments.timetable.EmptyTimetable
 
 class SkkedulaActivity : AppCompatActivity() {
@@ -53,6 +55,12 @@ class SkkedulaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_skkedula)
+
+        // receive userid data
+        val userid = intent.getStringExtra("ID").toString()
+        var bundle = Bundle()
+        bundle.putString("ID", userid)
+        BookmarkFragment().arguments = bundle
 
         // apply navigation bar
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
