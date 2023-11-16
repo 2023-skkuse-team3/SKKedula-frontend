@@ -7,10 +7,18 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import edu.skku.cs.skkedula.api.ApiObject
+import edu.skku.cs.skkedula.api.Login
+import edu.skku.cs.skkedula.api.LoginResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
@@ -18,6 +26,11 @@ class LoginActivity : AppCompatActivity() {
     private fun isValid(username: String, password: String): Boolean {
         if (username.equals("admin") && password.equals("admin")) return true
         return false
+    }
+
+    private fun changepg() {
+        val intent = Intent(this, SkkedulaActivity::class.java)
+        startActivity(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,15 +60,40 @@ class LoginActivity : AppCompatActivity() {
             val username = usernameEditText.text.toString()
             val password = passwordEditText.text.toString()
 
-            if (isValid(username, password)) {
-                errorMessageTextView.text = ""
-                finish()
-                val intent = Intent(this, SkkedulaActivity::class.java)
-                startActivity(intent)
-            } else {
-                errorMessageTextView.text = "아이디나 비밀번호가 올바르지 않습니다."
-                errorMessageTextView.visibility = View.VISIBLE
-            }
+            // api interface 가져오기
+            val log = Login(
+                user_id = username,
+                password = password
+            )
+            val loginUser_ = ApiObject.service.loginUser(log)
+
+            // 다음 장 바로 넘어가기 위한 함수 호출임!! 로그인 테스트 시 지우기
+            //changepg()
+
+            // url post
+            loginUser_.clone().enqueue(object: Callback<LoginResponse> {
+                override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                    val loginResponse = response.body()
+                    val statusmessage = loginResponse?.message
+
+                    if(response.isSuccessful.not()){
+                        errorMessageTextView.text = "아이디나 비밀번호가 올바르지 않습니다."
+                        errorMessageTextView.visibility = View.VISIBLE
+                        Log.d("DATA", "code=${response.code()}, message = $statusmessage")
+                        return
+                    }
+
+                    Log.d("DATA", "code=${response.code()}, message = $statusmessage")
+                    errorMessageTextView.text = ""
+                    finish()
+                    changepg()
+                }
+
+                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    Log.e("ERROR", t.toString())
+                    Toast.makeText(applicationContext, t.toString(), Toast.LENGTH_LONG).show()
+                }
+            })
         }
     }
 }

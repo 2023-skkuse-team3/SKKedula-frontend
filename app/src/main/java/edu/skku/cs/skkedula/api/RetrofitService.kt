@@ -15,6 +15,12 @@ data class Professor(@SerializedName("professor") val professor: String)
 data class Message(val message: String)
 
 interface RetrofitService {
+    @POST("/register")
+    fun registerUser(@Body registration: Registration): Call<RegistrationResponse>
+
+    @POST("/login")
+    fun loginUser(@Body login: Login): Call<LoginResponse>
+
     @POST("/timetable/searchByCourse")
     fun searchCourse(@Body searchQuery: CourseName) : Call<List<Course>>
 
