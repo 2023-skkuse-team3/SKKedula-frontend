@@ -1,5 +1,6 @@
 package edu.skku.cs.skkedula.fragments.bookmark
 
+import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -33,7 +34,17 @@ class BookmarkAdapter(val context: Context, val items:ArrayList<Bookmark>): Base
 
         val removebutton = view.findViewById<ImageView>(R.id.trash)
         removebutton.setOnClickListener {
-            //todo: remove in db
+            val builder = AlertDialog.Builder(context)
+            builder.setMessage("해당 항목을 삭제하시겠습니까?")
+
+            builder.setPositiveButton("확인") { _, _ ->
+                // todo: remove in db
+                items.removeAt(p0)
+                notifyDataSetChanged()
+            }
+            builder.setNegativeButton("취소") { _, _ ->}
+            val dialog = builder.create()
+            dialog.show()
         }
 
         return view

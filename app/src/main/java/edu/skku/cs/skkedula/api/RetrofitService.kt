@@ -3,8 +3,8 @@ package edu.skku.cs.skkedula.api
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -53,6 +53,6 @@ interface RetrofitService {
     @POST("/getpath")
     fun getPath(@Body getpath: Getpath): Call<GetpathResponse>
 
-    @DELETE("/deletepath")
+    @HTTP(method="DELETE", path = "/deletepath", hasBody = true)
     fun deletePath(@Body deletepath: Deletepath): Call<DeletepathResponse>
 }
