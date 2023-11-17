@@ -19,24 +19,45 @@
         tools:layout_editor_absoluteX="0dp" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/searchroute"
-        android:layout_width="80dp"
+        android:id="@+id/starting"
+        android:layout_width="0dp"
         android:layout_height="40dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
-        android:background="#FF6C0F"
-        android:drawableLeft="@drawable/map1"
+        android:layout_marginStart="10dp"
+        android:background="#FFFFFF"
         android:fontFamily="@font/poppins_regular"
         android:fontWeight="600"
         android:gravity="center"
-        android:text="길찾기"
+        android:text="출발"
+        android:textColor="#2B6653"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        android:paddingHorizontal="10dp"
+        app:layout_constraintEnd_toStartOf="@+id/ending"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/time" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/ending"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="#FF6C0F"
+        android:fontFamily="@font/poppins_regular"
+        android:fontWeight="600"
+        android:gravity="center"
+        android:text="도착"
         android:textColor="#FFFFFF"
-        android:textSize="12dp"
+        android:textSize="14dp"
         android:textStyle="bold"
         android:paddingHorizontal="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/other"
+        app:layout_constraintStart_toEndOf="@+id/starting"
         app:layout_constraintTop_toBottomOf="@+id/time" />
 
     <TextView
@@ -79,15 +100,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/address" />
 
-    <TextView
-        android:id="@+id/other"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="3dp"
-        android:text="기타정보"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/time" />
 </androidx.constraintlayout.widget.ConstraintLayout>
