@@ -67,6 +67,7 @@ class Timetable : Fragment() {
                 val endTime = times.substring(4, 6) + ":" + times.substring(6, 8)
                 "$dayString $startTime-$endTime"
             }
+            Log.d("FormattedTimes", formattedTimes.joinToString("/ "))
             return formattedTimes.joinToString("/ ")
         } else if (input.length > 9) {
             var formattedString = input.replace("1_", "월 ")
@@ -75,7 +76,7 @@ class Timetable : Fragment() {
             formattedString = formattedString.replace("4_", "목 ")
             formattedString = formattedString.replace("5_", "금 ")
             formattedString = formattedString.substring(0, 4) + ":" + formattedString.substring(4, 6) + "-" + formattedString.substring(6, 8) + ":" + formattedString.substring(8, 10)
-
+            Log.d("FormattedTimes", formattedString)
             return formattedString
         } else {
             return input
@@ -179,13 +180,15 @@ class Timetable : Fragment() {
                         else -> ScheduleDay.MONDAY
                     }
 
+                    Log.d("it", it)
+
                     val schedule = ScheduleEntity(
                         1, //originId
                         course.courseName, //scheduleName
                         formatRoomNum(course.roomNum), //roomInfo
                         day, //ScheduleDay object (MONDAY ~ SUNDAY)
-                        "8:20", //startTime format: "HH:mm"
-                        "10:30", //endTime  format: "HH:mm"
+                        it.substring(2,7), //startTime format: "HH:mm"
+                        it.substring(8,13), //endTime  format: "HH:mm"
                         "#F08676", //backgroundColor (optional)
                         "#FFFFFF" //textcolor (optional)
                     )

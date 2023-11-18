@@ -9,9 +9,6 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-// 강의 검색을 위한 data class
-data class CourseName(@SerializedName("course_name") val courseName: String)
-data class Professor(@SerializedName("professor") val professor: String)
 
 data class Message(val message: String)
 
@@ -31,9 +28,12 @@ interface RetrofitService {
     @GET("/{userId}/timetables/courses")
     fun getUserCourses(@Path("userId") userId: String): Call<List<Course>>
 
+    @POST("/reset-timetable")
+    fun resetTimetable(@Body data: UserId) : Call<Message>
+
     // URL 보낸 후 유저 강의 정보 가져오기
-    @POST("/{userId}/timetables/courses")
-    fun postUserCourses(@Path("userId") userId: String): Call<List<Course>>
+    @POST("/scrape_course_info")
+    fun postUserCourses(@Body data: UserId, @Query("url") url: String): Call<List<Course>>
 
     @POST("timetable/addSelectedCourse")
     fun addCourseToTimetable(@Body body: AddCourseBody) : Call<Message>

@@ -9,15 +9,15 @@ import android.webkit.URLUtil.isValidUrl
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import edu.skku.cs.skkedula.api.ApiObject
+import edu.skku.cs.skkedula.LoginActivity
 import edu.skku.cs.skkedula.R
 import edu.skku.cs.skkedula.api.ApiObject8000
 import edu.skku.cs.skkedula.api.Course
-import edu.skku.cs.skkedula.api.CourseInfo
+import edu.skku.cs.skkedula.api.Login
+import edu.skku.cs.skkedula.api.UserId
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -52,7 +52,6 @@ class EmptyTimetable : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         // 버튼 클릭 시 Fragment 전환
         val button = view.findViewById<Button>(R.id.addDirectly)
         val urlButton = view.findViewById<Button>(R.id.addWithUrl)
@@ -82,9 +81,11 @@ class EmptyTimetable : Fragment() {
 
             // 유효한 URL일 때
             if (isValidUrl(urlInput.text.toString())) {
-
+                // user id 가져오기
+                // var userId = LoginActivity.loginData.userId
+                // Log.d( "userId", userId)
                 // api interface 가져오기
-                val postUserCourses = ApiObject8000.service.postUserCourses("1")
+                val postUserCourses = ApiObject8000.service.postUserCourses(UserId("1"), url)
                 Log.d("API", "api 호출")
                 // url post
                 postUserCourses.clone().enqueue(object: Callback<List<Course>> {
@@ -96,6 +97,8 @@ class EmptyTimetable : Fragment() {
                         response.body()?.let{
                             Log.d("OK", it.toString())
                             it.forEachIndexed { index, course ->
+                                // 불러온 강의를 dataview에 추가
+                                timetableViewModel.addNewCourseToTimetable(course)
                                 Log.d("DATA", "[$index] date = ${course.courseName}, name = ${course.professor}")
                             }
 

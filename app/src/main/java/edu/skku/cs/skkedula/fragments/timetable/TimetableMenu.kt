@@ -6,16 +6,22 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import com.google.android.material.button.MaterialButton
 import edu.skku.cs.skkedula.R
-import androidx.fragment.app.commit
+import edu.skku.cs.skkedula.LoginActivity
+import edu.skku.cs.skkedula.api.ApiObject
+import edu.skku.cs.skkedula.api.Message
+import edu.skku.cs.skkedula.api.UserId
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -32,6 +38,8 @@ class TimetableMenu : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+    private val timetableViewModel: TimetableViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +90,36 @@ class TimetableMenu : Fragment() {
                 .setPositiveButton("확인",
                     DialogInterface.OnClickListener { dialog, id ->
                         // 시간표 삭제하기 (API)
+                        // user id 가져오기
+                        var userId = LoginActivity.loginData.userId
+                        // api interface 가져오기
+                        val callResetTimetable = ApiObject.service.resetTimetable(UserId(userId))
 
+                        callResetTimetable.clone().enqueue(object: Callback<Message> {
+
+                            override fun onResponse(call: Call<Message>, response: Response<Message>) {
+                                if(response.isSuccessful.not()){
+                                    return
+                                }
+
+                                response.body()?.let{
+                                    Log.d("OK", it.toString())
+                                    // courseList 초기화
+
+                                } ?: run {
+                                    Log.d("NG", "body is null")
+                                }
+                            }
+
+                            override fun onFailure(call: Call<Message>, t: Throwable) {
+                                Log.e("ERROR", t.toString())
+                                Toast.makeText(context, t.toString(), Toast.LENGTH_LONG).show()
+                            }
+
+                        })
+
+                        // timetable 데이터 제거
+                        timetableViewModel.initTimetable()
 
                         // empty timetable로 이동
                         val emptyTimetable = EmptyTimetable()
@@ -94,6 +131,7 @@ class TimetableMenu : Fragment() {
                         // timetable edit button 숨기기
                         val editButton = requireActivity().findViewById<ImageButton>(R.id.editButton)
                         editButton?.visibility = View.GONE
+
                     })
                 .setNegativeButton("취소",
                     DialogInterface.OnClickListener { dialog, id ->

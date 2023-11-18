@@ -32,9 +32,49 @@ class TimetableViewModel : ViewModel() {
     fun addNewCourseToTimetable(newItem: Course) {
         // 현재의 리스트를 가져와서 수정
         val currentList = _userCourseList.value ?: mutableListOf()
-        currentList.add(newItem)
+
+        // 영어 강의명 삭제
+        newItem.courseName = newItem.courseName.split("\n")[0]
+
+        // 같은 요일의 시간표를 합치기 위한 변수
+        var time = newItem.time
+        var mon = ""
+        var tue = ""
+        var wed = ""
+        var thu = ""
+        var fri = ""
+
+        // 같은 요일의 시간을 하나로 합침
+        if (time.contains(",")) {
+            time.split(", ").map {
+                when (it[0]) {
+                    '1' ->
+                        mon = if (mon.isEmpty()) it
+                        else mon.substring(0, 6) + it.substring(6, 10)
+                    '2' ->
+                        tue = if (tue.isEmpty()) it
+                        else tue.substring(0, 6) + it.substring(6, 10)
+                    '3' ->
+                        wed = if (wed.isEmpty()) it
+                        else wed.substring(0, 6) + it.substring(6, 10)
+                    '4' ->
+                        thu = if (thu.isEmpty()) it
+                        else thu.substring(0, 6) + it.substring(6, 10)
+                    '5' ->
+                        fri = if (fri.isEmpty()) it
+                        else fri.substring(0, 6) + it.substring(6, 10)
+                    else -> mon = ""
+                }
+            }
+            val daysList = listOf(mon, tue, wed, thu, fri).filter { it.isNotEmpty() }
+
+            newItem.time = daysList.joinToString(", ")
+        }
 
         Log.d("currentList in addNewCourseToTimetable", "$currentList")
+
+        // 리스트에 새로운 강의 추가
+        currentList.add(newItem)
 
         // 수정된 리스트를 다시 LiveData에 설정
         _userCourseList.postValue(currentList)

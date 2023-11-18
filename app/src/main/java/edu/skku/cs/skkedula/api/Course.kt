@@ -5,11 +5,11 @@ data class Course(
     @SerializedName("Course_ID")
     val courseId: String,
     @SerializedName("Course_name")
-    val courseName: String,
+    var courseName: String,
     @SerializedName("Professor")
     val professor: String,
     @SerializedName("Time")
-    val time: String,
+    var time: String,
     @SerializedName("Room_num")
     val roomNum: String,
     @SerializedName("Class_type")
