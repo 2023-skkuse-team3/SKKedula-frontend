@@ -70,8 +70,8 @@ class LoginActivity : AppCompatActivity() {
             val loginUser_ = ApiObject.service.loginUser(log)
 
             // 다음 장 바로 넘어가기 위한 코드, 로그인 테스트 시 지우기
-            //loginData.userId = username
-            //changepg(username)
+            loginData.userId = username
+            changepg(username)
 
             // url post
             loginUser_.clone().enqueue(object: Callback<LoginResponse> {

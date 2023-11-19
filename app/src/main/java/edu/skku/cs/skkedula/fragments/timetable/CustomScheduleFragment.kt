@@ -35,9 +35,24 @@ class CustomScheduleFragment : Fragment() {
     private var param2: String? = null
     var startTimeString = ""
     var endTimeString = ""
+    var timeString = ""
+    val days: Map<String, Int> = mapOf(
+        "월요일" to 1,
+        "화요일" to 2,
+        "수요일" to 3,
+        "목요일" to 4,
+        "금요일" to 5
+    )
 
     lateinit var binding:FragmentCustomScheduleBinding
     private val timetableViewModel: TimetableViewModel by activityViewModels()
+
+    // time string을 1_12001300 형태로 바꿈
+    fun formatTimeString(day: String, start: String, end: String): String {
+        val dayNum = days[day]
+
+        return dayNum.toString() + "_" + start.replace(":", "") + end.replace(":", "")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +77,7 @@ class CustomScheduleFragment : Fragment() {
             // 시간 선택 dialog 표시
             val cal = Calendar.getInstance()
             val timeSetListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                // 시작 시간 저장
                 startTimeString = "${hourOfDay}:${minute}"
 
                 // 시간 textview에 표시
@@ -69,14 +85,13 @@ class CustomScheduleFragment : Fragment() {
                 startTime2.text = startTimeString + " 부터"
             }
             TimePickerDialog(activity, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show()
-
-            // 시작 시간 저장
         }
 
         endTime.setOnClickListener {
             // 시간 선택 dialog 표시
             val cal = Calendar.getInstance()
             val timeSetListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                // 종료 시간 저장
                 endTimeString = "${hourOfDay}:${minute}"
 
                 // 시간 textview에 표시
@@ -84,27 +99,26 @@ class CustomScheduleFragment : Fragment() {
                 endTime2.text = endTimeString + " 까지"
             }
             TimePickerDialog(activity, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show()
-
-            // 종료 시간 저장
         }
 
         // 추가하기 버튼
         addBtn.setOnClickListener {
-            if (!scheduleName.text.toString().isNullOrEmpty() && !location.text.toString().isNullOrEmpty()) {
-                // 제목과 장소를 모두 입력했을 때
+            if (!scheduleName.text.toString().isNullOrEmpty() && !location.text.toString().isNullOrEmpty() && startTimeString.isNotEmpty() && endTimeString.isNotEmpty()) {
+                // 제목과 장소, 시간을 모두 입력했을 때
                 try {
                     val roomNum = location.text.toString().toInt()
-                    val newSchedule = CourseInfo(courseName = scheduleName.text.toString(), professor = "a", startTime = listOf(startTimeString), endTime = listOf(endTimeString), dayOfWeek = listOf(day.toString()), buildingNum = roomNum)
 
+                    // 커스텀 강의 추가 api 호출
+
+
+
+                    val newSchedule = Course(courseId = "", courseName = scheduleName.text.toString(), professor = "", time = "", roomNum = location.text.toString(), classType = "커스텀 일정", semester = "2", year = 2023)
+
+                    // 강의 추가 API 호출, 성공 시 viewmodel에 추가
+                    timetableViewModel.addNewCourseToTimetable(newSchedule)
                 } catch (e: NumberFormatException) {
                     Toast.makeText(requireContext(), "유효한 강의실 번호가 아닙니다.", Toast.LENGTH_SHORT).show()
                 }
-
-                val newSchedule = Course(courseId = "", courseName = scheduleName.text.toString(), professor = "a", time = "", roomNum = location.text.toString(), classType = "", semester = "", year = 3)
-
-                // 강의 추가 API 호출, 성공 시 viewmodel에 추가
-                timetableViewModel.addNewCourseToTimetable(newSchedule)
-
 
                 Log.d("tag", "not empty")
             } else {

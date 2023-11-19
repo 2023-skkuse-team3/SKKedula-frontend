@@ -9,10 +9,13 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import edu.skku.cs.skkedula.R
+import edu.skku.cs.skkedula.databinding.FragmentBookmarkBinding
+import edu.skku.cs.skkedula.databinding.FragmentTimetablePageBinding
 
 /**
  * A simple [Fragment] subclass.
@@ -25,6 +28,10 @@ class TimetablePage : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+    private var _binding: FragmentTimetablePageBinding? = null
+    private val timetableViewModel: TimetableViewModel by activityViewModels()
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +46,26 @@ class TimetablePage : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_timetable_page, container, false)
-        return view
+        _binding = FragmentTimetablePageBinding.inflate(inflater, container, false)
+
+        if (timetableViewModel.userCourseList.value.isNullOrEmpty()) {
+            // set empty timetable
+            val emptyTimetable = EmptyTimetable()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .add(R.id.fragmentContainerView, emptyTimetable)
+                .commit()
+        } else {
+            // set timetable
+            requireActivity().supportFragmentManager.beginTransaction()
+                .add(R.id.fragmentContainerView, Timetable())
+                .commit()
+
+            // timetable edit button 표시
+            val editButton = binding.editButton
+            editButton?.visibility = View.VISIBLE
+        }
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,6 +85,11 @@ class TimetablePage : Fragment() {
             val navController = Navigation.findNavController(requireActivity(), R.id.card)
             navController.navigate(R.id.timetableMenu)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

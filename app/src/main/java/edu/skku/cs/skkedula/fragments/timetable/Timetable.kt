@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.FragmentContainerView
@@ -20,8 +19,6 @@ import com.islandparadise14.mintable.model.ScheduleDay
 import com.islandparadise14.mintable.model.ScheduleEntity
 import com.islandparadise14.mintable.tableinterface.OnScheduleClickListener
 import edu.skku.cs.skkedula.R
-import edu.skku.cs.skkedula.databinding.FragmentRouteresultBinding
-import edu.skku.cs.skkedula.fragments.map.MapViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -38,13 +35,14 @@ class Timetable : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private val day = arrayOf("월", "화", "수", "목", "금")
+    private val colorList: List<String> = listOf(
+        "#F28585", "#F2B263", "#86A69D", "#4F6F8C", "#8980BF"
+    )
 
     private val timetableViewModel: TimetableViewModel by activityViewModels()
     val scheduleList: ArrayList<ScheduleEntity> = ArrayList()
     fun setTempCourseInfo(courseName: String, classroom: String) {
         timetableViewModel.setTempCourseInfo(courseName, classroom)
-
-        // user, courseName으로 나머지 정보 불러와 viewmodel에 정보 저장
     }
 
     private fun formatTimeString(input: String): String {
@@ -166,6 +164,7 @@ class Timetable : Fragment() {
             scheduleList.clear()
             Log.d("DATA", "Course List $courseList")
             courseList.mapIndexed { index, course ->
+                val backgroundColor = colorList[index % colorList.size]
 
                 val formattedTimeString = formatTimeString(course.time)
                 Log.d("DATA", "$course")
@@ -189,7 +188,7 @@ class Timetable : Fragment() {
                         day, //ScheduleDay object (MONDAY ~ SUNDAY)
                         it.substring(2,7), //startTime format: "HH:mm"
                         it.substring(8,13), //endTime  format: "HH:mm"
-                        "#F08676", //backgroundColor (optional)
+                        backgroundColor, //backgroundColor (optional)
                         "#FFFFFF" //textcolor (optional)
                     )
 

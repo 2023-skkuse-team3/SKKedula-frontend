@@ -12,12 +12,17 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.naver.maps.map.MapFragment
+import com.naver.maps.map.util.FusedLocationSource
 import edu.skku.cs.skkedula.LoginActivity
 import edu.skku.cs.skkedula.R
 import edu.skku.cs.skkedula.api.ApiObject8000
 import edu.skku.cs.skkedula.api.Course
 import edu.skku.cs.skkedula.api.Login
 import edu.skku.cs.skkedula.api.UserId
+import edu.skku.cs.skkedula.databinding.FragmentCustomScheduleBinding
+import edu.skku.cs.skkedula.databinding.FragmentEmptyTimetableBinding
+import edu.skku.cs.skkedula.databinding.FragmentMapBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,6 +39,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class EmptyTimetable : Fragment() {
+    lateinit var binding: FragmentEmptyTimetableBinding
 
     private val timetableViewModel: TimetableViewModel by activityViewModels()
 
@@ -41,12 +47,14 @@ class EmptyTimetable : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_empty_timetable, container, false)
+        binding = FragmentEmptyTimetableBinding.inflate(inflater)
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,10 +90,10 @@ class EmptyTimetable : Fragment() {
             // 유효한 URL일 때
             if (isValidUrl(urlInput.text.toString())) {
                 // user id 가져오기
-                // var userId = LoginActivity.loginData.userId
-                // Log.d( "userId", userId)
+                var userId = LoginActivity.loginData.userId
+                Log.d( "userId", userId)
                 // api interface 가져오기
-                val postUserCourses = ApiObject8000.service.postUserCourses(UserId("1"), url)
+                val postUserCourses = ApiObject8000.service.postUserCourses(UserId(userId), url)
                 Log.d("API", "api 호출")
                 // url post
                 postUserCourses.clone().enqueue(object: Callback<List<Course>> {
@@ -123,9 +131,6 @@ class EmptyTimetable : Fragment() {
                     }
 
                 })
-
-
-                // 사용자의 강의 목록 불러와 시간표에 추가하기
             } else {
                 // 유효하지 않은 URL입니다. 사용자에게 알림 또는 처리를 수행하세요.
             }

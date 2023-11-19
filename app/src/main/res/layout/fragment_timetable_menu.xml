@@ -58,7 +58,7 @@
         app:layout_constraintTop_toBottomOf="@+id/contour" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/addCourse"
+        android:id="@+id/searchButton"
         android:layout_width="0dp"
         android:layout_height="45dp"
         android:fontFamily="@font/poppins_regular"
@@ -82,6 +82,6 @@
         android:layout_height="1dp"
         android:layout_marginTop="4dp"
         android:background="#50FFFFFF"
-        app:layout_constraintTop_toBottomOf="@+id/addCourse"
+        app:layout_constraintTop_toBottomOf="@+id/searchButton"
         tools:layout_editor_absoluteX="16dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

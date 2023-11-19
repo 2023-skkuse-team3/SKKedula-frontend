@@ -61,7 +61,7 @@ class TimetableMenu : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // 강의 추가하기 메뉴
-        val courseBtn = view.findViewById<MaterialButton>(R.id.addCourse)
+        val courseBtn = view.findViewById<MaterialButton>(R.id.searchButton)
         courseBtn.setOnClickListener {
             // apply navigation bar
             val navController = Navigation.findNavController(requireActivity(), R.id.card)

@@ -35,6 +35,9 @@ interface RetrofitService {
     @POST("/scrape_course_info")
     fun postUserCourses(@Body data: UserId, @Query("url") url: String): Call<List<Course>>
 
+    @POST("/timetables/delete-course")
+    fun removeCourseFromTimetable(@Body body: UserCourse) : Call<Message>
+
     @POST("timetable/addSelectedCourse")
     fun addCourseToTimetable(@Body body: AddCourseBody) : Call<Message>
 

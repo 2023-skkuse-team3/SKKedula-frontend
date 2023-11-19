@@ -5,12 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.view.animation.TranslateAnimation
-import android.widget.EditText
-import android.widget.RelativeLayout
+import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
@@ -18,9 +16,19 @@ import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
+import androidx.transition.Visibility
+import com.google.android.material.button.MaterialButton
+import edu.skku.cs.skkedula.LoginActivity
 import edu.skku.cs.skkedula.R
+import edu.skku.cs.skkedula.api.ApiObject
+import edu.skku.cs.skkedula.api.Message
+import edu.skku.cs.skkedula.api.UserCourse
 import edu.skku.cs.skkedula.fragments.map.MapViewModel
+import edu.skku.cs.skkedula.fragments.map.RoutesearchFragment
 import org.w3c.dom.Text
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 /**
  * A simple [Fragment] subclass.
@@ -36,7 +44,10 @@ class CourseDetail : Fragment() {
     private var param2: String? = null
 
     private val timetableViewModel: TimetableViewModel by activityViewModels()
+    private val mapViewModel: MapViewModel by activityViewModels()
 
+    // user id 가져오기
+    private var userId = LoginActivity.loginData.userId
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -56,7 +67,10 @@ class CourseDetail : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // 출발지
         val startPoint = view.findViewById<TextView>(R.id.startPointValue)
+        // 도착지
+        val destinationLabel = view.findViewById<TextView>(R.id.destinationInfo)
 
         startPoint.setOnClickListener {
             // startpoint 클릭 활성화
@@ -104,17 +118,93 @@ class CourseDetail : Fragment() {
         timetableViewModel.tempCourseName.observe(viewLifecycleOwner) { text ->
             val courseName = view.findViewById<TextView>(R.id.courseName)
             courseName.text = text
-            destination += "($text)"
 
             // 도착지 표시
-            val destinationLabel = view.findViewById<TextView>(R.id.destinationInfo)
+            destination += "($text)"
             destinationLabel.text = destination
+        }
+
+        // 교수명 표시
+        timetableViewModel.tempProfessor.observe(viewLifecycleOwner) { text ->
+            val professor = view.findViewById<TextView>(R.id.professor)
+            professor.text = text
+        }
+
+        // 강의 시간 표시
+        timetableViewModel.tempCourseTime.observe(viewLifecycleOwner) { text ->
+            val time = view.findViewById<TextView>(R.id.time)
+            time.text = text
+        }
+
+        // 강의 유형 표시
+        timetableViewModel.tempCourseType.observe(viewLifecycleOwner) { text ->
+            val courseType = view.findViewById<TextView>(R.id.courseType)
+            courseType.text = text
         }
 
         // 출발지 표시
         timetableViewModel.startPoint.observe(viewLifecycleOwner) { text ->
             val startPoint = view.findViewById<TextView>(R.id.startPointValue)
             startPoint.text = text
+        }
+
+        // 강의 삭제 버튼
+        val removeBtn = view.findViewById<ImageButton>(R.id.removeButton)
+        removeBtn.setOnClickListener {
+            // viewmodel에서 해당 강의 삭제
+            var courseId = ""
+            timetableViewModel.tempCourseId.value?.let { it1 -> courseId = it1}
+            timetableViewModel.removeCourse(courseId)
+
+            // 강의 삭제 api 호출
+            val callRemoveCourse = ApiObject.service.removeCourseFromTimetable(UserCourse(userId, courseId))
+
+            // url post
+            callRemoveCourse.clone().enqueue(object: Callback<Message> {
+                override fun onResponse(call: Call<Message>, response: Response<Message>) {
+                    if(response.isSuccessful.not()){
+                        return
+                    }
+
+                    response.body()?.let{
+                        Log.d("OK", it.toString())
+
+                    } ?: run {
+                        Log.d("NG", "body is null")
+                    }
+                }
+
+                override fun onFailure(call: Call<Message>, t: Throwable) {
+                    Log.e("ERROR", t.toString())
+                    Toast.makeText(context, t.toString(), Toast.LENGTH_LONG).show()
+                }
+
+            })
+
+            // 카드 내리기
+            val cardView = requireActivity().findViewById<FragmentContainerView>(R.id.card)
+            val buttomDownAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.bottom_down)
+            cardView.startAnimation(buttomDownAnimation)
+            cardView.visibility = View.GONE
+        }
+
+        // 강의실 위치 찾기 버튼
+        val searchBtn = view.findViewById<MaterialButton>(R.id.searchButton)
+        searchBtn.setOnClickListener {
+            // map view model에 출발/도착지 정보 저장
+            mapViewModel.startText.value = startPoint.text.toString()
+            mapViewModel.endText.value = destinationLabel.text.toString()
+
+            // 카드 내리기
+            val cardView = requireActivity().findViewById<FragmentContainerView>(R.id.card)
+            val buttomDownAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.bottom_down)
+            cardView.startAnimation(buttomDownAnimation)
+            cardView.visibility = View.GONE
+
+            // 화면 전환
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.nav_host_fragment_activity_main, RoutesearchFragment())
+            transaction.commit()
         }
     }
 
