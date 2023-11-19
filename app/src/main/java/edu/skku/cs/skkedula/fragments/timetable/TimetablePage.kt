@@ -77,8 +77,8 @@ class TimetablePage : Fragment() {
         // timetable 수정 버튼
         editButton.setOnClickListener {
             val targetView = requireActivity().findViewById<FragmentContainerView>(R.id.card)
-            val buttomUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.bottom_up)
-            targetView.startAnimation(buttomUpAnimation)
+            val bottomUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.bottom_up)
+            targetView.startAnimation(bottomUpAnimation)
             targetView.visibility = View.VISIBLE
 
             // apply navigation bar

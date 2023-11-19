@@ -39,7 +39,7 @@ interface RetrofitService {
     fun removeCourseFromTimetable(@Body body: UserCourse) : Call<Message>
 
     @POST("timetable/addSelectedCourse")
-    fun addCourseToTimetable(@Body body: AddCourseBody) : Call<Message>
+    fun addCourseToTimetable(@Body body: UserCourse) : Call<Message>
 
     //@POST("/add_study_space")
     //fun poststudyspaces(@Body poststudyspaces: Studyspaces) : Call<List<Studyspaces>>

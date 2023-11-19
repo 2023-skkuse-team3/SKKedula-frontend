@@ -46,6 +46,9 @@ class CourseDetail : Fragment() {
     private val timetableViewModel: TimetableViewModel by activityViewModels()
     private val mapViewModel: MapViewModel by activityViewModels()
 
+    private var startLocation = "현위치"
+    private var endLocation = ""
+
     // user id 가져오기
     private var userId = LoginActivity.loginData.userId
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,6 +115,7 @@ class CourseDetail : Fragment() {
             val classroom = view.findViewById<TextView>(R.id.classroom)
             classroom.text = text
             destination += text
+            endLocation = text.split(" ")[text.split(" ").size - 1]
         }
 
         // 강의명 표시
@@ -146,6 +150,8 @@ class CourseDetail : Fragment() {
         timetableViewModel.startPoint.observe(viewLifecycleOwner) { text ->
             val startPoint = view.findViewById<TextView>(R.id.startPointValue)
             startPoint.text = text
+            if (!startLocation.contains("현위치"))
+                startLocation = text.split(" ")[text.split(" ").size - 1]
         }
 
         // 강의 삭제 버튼
@@ -158,14 +164,8 @@ class CourseDetail : Fragment() {
 
             // 강의 삭제 api 호출
             val callRemoveCourse = ApiObject.service.removeCourseFromTimetable(UserCourse(userId, courseId))
-
-            // url post
             callRemoveCourse.clone().enqueue(object: Callback<Message> {
                 override fun onResponse(call: Call<Message>, response: Response<Message>) {
-                    if(response.isSuccessful.not()){
-                        return
-                    }
-
                     response.body()?.let{
                         Log.d("OK", it.toString())
 
@@ -178,7 +178,6 @@ class CourseDetail : Fragment() {
                     Log.e("ERROR", t.toString())
                     Toast.makeText(context, t.toString(), Toast.LENGTH_LONG).show()
                 }
-
             })
 
             // 카드 내리기
@@ -194,6 +193,10 @@ class CourseDetail : Fragment() {
             // map view model에 출발/도착지 정보 저장
             mapViewModel.startText.value = startPoint.text.toString()
             mapViewModel.endText.value = destinationLabel.text.toString()
+            mapViewModel.endLocation.value = endLocation
+            mapViewModel.startLocation.value = startLocation
+
+            Log.d("mapViewModel", mapViewModel.startLocation.value + " " + mapViewModel.endLocation.value)
 
             // 카드 내리기
             val cardView = requireActivity().findViewById<FragmentContainerView>(R.id.card)

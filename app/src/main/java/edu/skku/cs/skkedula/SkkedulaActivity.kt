@@ -81,7 +81,7 @@ class SkkedulaActivity : AppCompatActivity() {
 
         // set card view
         val cardView = findViewById<FragmentContainerView>(R.id.card)
-        val buttomDownAnimation = AnimationUtils.loadAnimation(this, R.anim.bottom_down)
+        val bottomDownAnimation = AnimationUtils.loadAnimation(this, R.anim.bottom_down)
         cardView.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -103,7 +103,7 @@ class SkkedulaActivity : AppCompatActivity() {
                             cardView.visibility = View.GONE
                         }
                         // 카드 내리기
-                        cardView.startAnimation(buttomDownAnimation)
+                        cardView.startAnimation(bottomDownAnimation)
                         cardView.visibility = View.GONE
                     }
                 }

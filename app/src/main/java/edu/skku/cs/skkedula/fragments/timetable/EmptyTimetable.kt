@@ -66,7 +66,7 @@ class EmptyTimetable : Fragment() {
 
         button.setOnClickListener {
 
-            timetableViewModel.setExampleTimetable()
+            timetableViewModel.initTimetable()
 
             // timetable edit button 표시
             val editButton = requireActivity().findViewById<ImageButton>(R.id.editButton)

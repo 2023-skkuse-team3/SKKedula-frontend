@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.children
@@ -17,7 +19,9 @@ import edu.skku.cs.skkedula.R
 import edu.skku.cs.skkedula.api.Course
 import edu.skku.cs.skkedula.api.CourseInfo
 import edu.skku.cs.skkedula.databinding.FragmentCustomScheduleBinding
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -43,21 +47,41 @@ class CustomScheduleFragment : Fragment() {
         "목요일" to 4,
         "금요일" to 5
     )
+    var dayString = "월요일"
 
     lateinit var binding:FragmentCustomScheduleBinding
     private val timetableViewModel: TimetableViewModel by activityViewModels()
 
     // time string을 1_12001300 형태로 바꿈
-    fun formatTimeString(day: String, start: String, end: String): String {
+    private fun formatTimeString(day: String, start: String, end: String): String {
         val dayNum = days[day]
 
         return dayNum.toString() + "_" + start.replace(":", "") + end.replace(":", "")
+    }
+
+    private fun formatTimeNumber(input: String): String {
+        val parts = input.split(":")
+        // 시간과 분을 추출
+        val hour = parts[0].toInt()
+        val minute = parts[1].toInt()
+
+        // Calendar 객체를 사용하여 시간과 분을 설정
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, hour)
+        calendar.set(Calendar.MINUTE, minute)
+
+        // SimpleDateFormat을 사용하여 시간을 "HH:mm" 형식으로 포맷팅
+        val simpleDateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+        // 포맷팅된 시간을 반환
+        return simpleDateFormat.format(calendar.time)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,12 +97,15 @@ class CustomScheduleFragment : Fragment() {
         val day = binding.daySpinner
         val addBtn = binding.addSchedule
 
+        //var dayAdapter = ArrayAdapter<String>(this, )
+
         startTime.setOnClickListener {
             // 시간 선택 dialog 표시
             val cal = Calendar.getInstance()
             val timeSetListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
                 // 시작 시간 저장
                 startTimeString = "${hourOfDay}:${minute}"
+                startTimeString = formatTimeNumber(startTimeString)
 
                 // 시간 textview에 표시
                 val startTime2 = binding.startTime
@@ -93,6 +120,7 @@ class CustomScheduleFragment : Fragment() {
             val timeSetListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
                 // 종료 시간 저장
                 endTimeString = "${hourOfDay}:${minute}"
+                endTimeString = formatTimeNumber(endTimeString)
 
                 // 시간 textview에 표시
                 val endTime2 = binding.endTime
@@ -110,12 +138,19 @@ class CustomScheduleFragment : Fragment() {
 
                     // 커스텀 강의 추가 api 호출
 
+                    Log.d("CUSTOM DAY", day.selectedItem.toString())
 
-
-                    val newSchedule = Course(courseId = "", courseName = scheduleName.text.toString(), professor = "", time = "", roomNum = location.text.toString(), classType = "커스텀 일정", semester = "2", year = 2023)
+                    val newSchedule = Course(courseId = "1", courseName = scheduleName.text.toString(), professor = "", time = formatTimeString(day.selectedItem.toString(), startTimeString, endTimeString), roomNum = location.text.toString(), classType = "커스텀 일정", semester = "2", year = 2023)
 
                     // 강의 추가 API 호출, 성공 시 viewmodel에 추가
                     timetableViewModel.addNewCourseToTimetable(newSchedule)
+
+                    // 카드 내리기
+                    val cardView = requireActivity().findViewById<FragmentContainerView>(R.id.card)
+                    val bottomDownAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.bottom_down)
+                    cardView.startAnimation(bottomDownAnimation)
+                    cardView.visibility = View.GONE
+
                 } catch (e: NumberFormatException) {
                     Toast.makeText(requireContext(), "유효한 강의실 번호가 아닙니다.", Toast.LENGTH_SHORT).show()
                 }

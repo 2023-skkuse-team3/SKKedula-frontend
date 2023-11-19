@@ -8,13 +8,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentContainerView
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import edu.skku.cs.skkedula.LoginActivity
+import edu.skku.cs.skkedula.R
 import edu.skku.cs.skkedula.api.ApiObject
 import edu.skku.cs.skkedula.api.Course
 import edu.skku.cs.skkedula.api.CourseName
+import edu.skku.cs.skkedula.api.Message
 import edu.skku.cs.skkedula.api.Professor
+import edu.skku.cs.skkedula.api.UserCourse
 import edu.skku.cs.skkedula.databinding.FragmentCourseSearchBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,6 +46,9 @@ class CourseSearchFragment : Fragment() {
 
     lateinit var binding: FragmentCourseSearchBinding
     private var courseList:List<Course> = emptyList()
+    private val timetableViewModel: TimetableViewModel by activityViewModels()
+    // user id 가져오기
+    private var userId = LoginActivity.loginData.userId
 
     private var job: Job? = null
 
@@ -95,7 +105,42 @@ class CourseSearchFragment : Fragment() {
                             courseList = tempCourseList
 
                             val adapter = RecyclerViewAdapter(courseList){
+                                // 선택된 강의 확인 toast
                                 course -> Toast.makeText(requireActivity(), "${course.courseId} 클릭!", Toast.LENGTH_SHORT).show()
+
+                                // 강의 추가 api 호출
+                                val callAddCourse = ApiObject.service.addCourseToTimetable(
+                                    UserCourse(userId, course.courseId)
+                                )
+                                callAddCourse.clone().enqueue(object: Callback<Message> {
+                                    override fun onResponse(call: Call<Message>, response: Response<Message>) {
+                                        if(response.isSuccessful.not()){
+                                            return
+                                        }
+
+                                        response.body()?.let{
+                                            Log.d("OK", it.toString())
+
+                                        } ?: run {
+                                            Log.d("NG", "body is null")
+                                        }
+                                    }
+
+                                    override fun onFailure(call: Call<Message>, t: Throwable) {
+                                        Log.e("ERROR", t.toString())
+                                        Toast.makeText(context, t.toString(), Toast.LENGTH_LONG).show()
+                                    }
+
+                                })
+
+                                // viewmodel에 강의 추가
+                                timetableViewModel.addNewCourseToTimetable(course)
+
+                                // 카드 내리기
+                                val cardView = requireActivity().findViewById<FragmentContainerView>(R.id.card)
+                                val bottomDownAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.bottom_down)
+                                cardView.startAnimation(bottomDownAnimation)
+                                cardView.visibility = View.GONE
                             }
                             adapter.notifyDataSetChanged()
 
