@@ -306,7 +306,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         studymarkers.clear()
     }
 
-    private fun showCardView(marker: Marker) {
+    /*private fun showCardView(marker: Marker) {
         val study = marker.tag as? Study ?: return
         val bundle = Bundle().apply {
             putString("studyName", study.name) // "studyName"은 전달할 키입니다.
@@ -322,7 +322,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
 // studymarker 클릭 이벤트 핸들러
-    studymarker.setOnClickListener { marker -> showCardView(marker) }
+    studymarker.setOnClickListener { marker -> showCardView(marker) }*/
 
 
     /*private fun performTestSearch() {
