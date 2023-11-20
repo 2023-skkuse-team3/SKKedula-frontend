@@ -5,18 +5,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import edu.skku.cs.skkedula.databinding.FragmentBuildingDetailBinding
+import edu.skku.cs.skkedula.fragments.map.MapViewModel
 
 class BuildingDetailFragment : Fragment() {
     private var buildingName: String? = null
     private var _binding: FragmentBuildingDetailBinding? = null
     private val binding get() = _binding!!
+    private val mapViewModel: MapViewModel by activityViewModels()
+
+
+    companion object {
+        private const val ARG_BUILDING_NAME = "buildingName"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            buildingName = it.getString(ARG_ENTRANCE_NAME)
+            buildingName = it.getString(ARG_BUILDING_NAME)
         }
     }
 
@@ -30,6 +38,12 @@ class BuildingDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // ViewModel에서 buildingData 관찰. 람다를 괄호 밖으로 이동
+        mapViewModel.buildingData.observe(viewLifecycleOwner) { buildingData ->
+            // UI 업데이트
+            binding.buildingname.text = buildingData.buildingName
+        }
 
         // Update the entrance name
         binding.buildingname.text = buildingName
@@ -53,16 +67,5 @@ class BuildingDetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        private const val ARG_ENTRANCE_NAME = "buildingName"
-        @JvmStatic
-        fun newInstance(buildingName: String) =
-            BuildingDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_ENTRANCE_NAME, buildingName)
-                }
-            }
     }
 }

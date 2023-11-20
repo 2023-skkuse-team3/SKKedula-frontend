@@ -9,19 +9,15 @@ import androidx.navigation.fragment.findNavController
 import edu.skku.cs.skkedula.databinding.FragmentBuildingDetailBinding
 import edu.skku.cs.skkedula.databinding.FragmentStudyDetailBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [StudyDetailFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class StudyDetailFragment : Fragment() {
     private var studyName: String? = null
     private var _binding: FragmentStudyDetailBinding? = null
     private val binding get() = _binding!!
+
+    // ARG_STUDY_NAME 상수 추가
+    companion object {
+        const val ARG_STUDY_NAME = "studyName"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +37,7 @@ class StudyDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Update the entrance name
+        // Update the study name
         binding.studyname.text = studyName
 
         // Starting and Ending button click listeners
@@ -63,16 +59,5 @@ class StudyDetailFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        private const val ARG_STUDY_NAME = "studyName"
-        @JvmStatic
-        fun newInstance(studyName: String) =
-            BuildingDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_STUDY_NAME, studyName)
-                }
-            }
     }
 }
