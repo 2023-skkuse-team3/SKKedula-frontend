@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.LocationTrackingMode
@@ -302,8 +303,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
             marker.onClickListener = Overlay.OnClickListener { overlay ->
                 val clickedMarker = overlay as? Marker
-                clickedMarker?.let { showCardView(it) }
-                true // Indicate that the click event has been handled
+                clickedMarker?.let {
+                    showCardView(it)
+                    Log.d("MapFragment", "Study marker clicked: ${it.tag}")
+                    // ViewModel의 onMarkerClicked 호출
+                    mapViewModel.onMarkerClicked(it.tag as? Studyspace)
+                }
+                true // 항상 non-nullable Boolean 값을 반환
             }
             studymarkers.add(marker)
         }
@@ -330,8 +336,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         timeTextView?.text = study.time
 
         // NavController를 사용하여 StudyDetailFragment로 이동
-        val navHostFragment = childFragmentManager.findFragmentById(R.id.card) as NavHostFragment
-        navHostFragment.navController.navigate(R.id.studyDetailFragment, bundle)
+        val navHostFragment = childFragmentManager.findFragmentById(R.id.card) as? NavHostFragment
+        navHostFragment?.let {
+            it.navController.navigate(R.id.studyDetailFragment, bundle)
+            val cardView = activity?.findViewById<FragmentContainerView>(R.id.card)
+            cardView?.visibility = View.VISIBLE
+        } ?: run {
+            // 적절한 오류 처리 또는 로그 출력
+            Log.e("MapFragment", "NavHostFragment not found")
+        }
 
         // Accessing the FragmentContainerView from the activity
         val cardView = activity?.findViewById<FragmentContainerView>(R.id.card)
@@ -390,10 +403,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     response: Response<BuildingResponse>
                 ) {
                     if (response.isSuccessful) {
-                        val responseBody = response.body()
-                        responseBody?.let {
-                            // 서버로부터 받은 위도와 경도를 사용하여 지도에 마커를 추가합니다.
-                            addMarkerToMap(it.latitude, it.longitude)
+                        val buildingResponse = response.body()
+                        buildingResponse?.let {
+                            // 지도에 마커 추가
+                            addMarkerToMap(it.latitude, it.longitude, it.buildingName)
+                            // ViewModel에 건물 데이터 전달
+                            mapViewModel.onBuildingDataReceived(it)
                         }
                     } else {
                         // 에러 응답 처리
@@ -408,13 +423,29 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             })
     }
 
-    private fun addMarkerToMap(latitude: Double, longitude: Double) {
+    private fun addMarkerToMap(latitude: Double, longitude: Double, buildingName: String) {
         val marker = Marker().apply {
             position = LatLng(latitude, longitude)
             map = naverMap
             icon = OverlayImage.fromResource(R.drawable.study_marker)
+            tag = buildingName // Building 이름 저장
+        }
+        marker.onClickListener = Overlay.OnClickListener { overlay ->
+            val clickedMarker = overlay as? Marker
+            clickedMarker?.let {
+                navigateToBuildingDetail(it.tag as String)
+            }
+            true
         }
     }
+
+    private fun navigateToBuildingDetail(buildingName: String) {
+        val bundle = Bundle().apply {
+            putString("buildingName", buildingName)
+        }
+        findNavController().navigate(R.id.buildingDetailFragment, bundle)
+    }
+
 
     private fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
