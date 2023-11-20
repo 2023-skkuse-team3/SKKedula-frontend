@@ -64,16 +64,4 @@
             android:id="@+id/action_studyDetailFragment_to_RoutesearchFragment"
             app:destination="@id/RoutesearchFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/buildingDetailFragment"
-        android:name="edu.skku.cs.skkedula.BuildingDetailFragment"
-        android:label="BuildingDetail"
-        tools:layout="@layout/fragment_building_detail">
-    </fragment>
-    <fragment
-        android:id="@+id/RoutesearchFragment"
-        android:name="edu.skku.cs.skkedula.fragments.map.RoutesearchFragment"
-        android:label="RoutesearchFragment"
-        tools:layout="@layout/fragment_routesearch">
-    </fragment>
 </navigation>
