@@ -19,6 +19,7 @@ import edu.skku.cs.skkedula.R
 import edu.skku.cs.skkedula.api.ApiObject8000
 import edu.skku.cs.skkedula.api.Course
 import edu.skku.cs.skkedula.api.Login
+import edu.skku.cs.skkedula.api.Url
 import edu.skku.cs.skkedula.api.UserId
 import edu.skku.cs.skkedula.databinding.FragmentCustomScheduleBinding
 import edu.skku.cs.skkedula.databinding.FragmentEmptyTimetableBinding
@@ -93,7 +94,7 @@ class EmptyTimetable : Fragment() {
                 var userId = LoginActivity.loginData.userId
                 Log.d( "userId", userId)
                 // api interface 가져오기
-                val postUserCourses = ApiObject8000.service.postUserCourses(UserId(userId), url)
+                val postUserCourses = ApiObject8000.service.postUserCourses(Url(userId, url))
                 Log.d("API", "api 호출")
                 // url post
                 postUserCourses.clone().enqueue(object: Callback<List<Course>> {

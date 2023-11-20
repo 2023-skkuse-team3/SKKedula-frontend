@@ -150,7 +150,7 @@ class CourseDetail : Fragment() {
         timetableViewModel.startPoint.observe(viewLifecycleOwner) { text ->
             val startPoint = view.findViewById<TextView>(R.id.startPointValue)
             startPoint.text = text
-            if (!startLocation.contains("현위치"))
+            if (!text.contains("현위치"))
                 startLocation = text.split(" ")[text.split(" ").size - 1]
         }
 

@@ -33,7 +33,7 @@ interface RetrofitService {
 
     // URL 보낸 후 유저 강의 정보 가져오기
     @POST("/scrape_course_info")
-    fun postUserCourses(@Body data: UserId, @Query("url") url: String): Call<List<Course>>
+    fun postUserCourses(@Body data: Url): Call<List<Course>>
 
     @POST("/timetables/delete-course")
     fun removeCourseFromTimetable(@Body body: UserCourse) : Call<Message>
