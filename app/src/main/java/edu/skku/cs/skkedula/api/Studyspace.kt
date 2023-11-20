@@ -1,17 +1,18 @@
 package edu.skku.cs.skkedula.api
 
 import com.google.gson.annotations.SerializedName
-data class Studyspaces(
+
+data class Studyspace(
     @SerializedName("Studyspace_ID")
-    val studyspaceID: Int,
+    val studyspaceID: String,
     @SerializedName("Name")
     val name: String,
     @SerializedName("Building_num")
-    val buildingNum: Int,
+    val buildingNum: String,
     @SerializedName("Latitude")
     val latitude: Double,
     @SerializedName("Longitude")
     val longitude: Double,
     @SerializedName("Floor")
-    val floor: Int,
+    val floor: Int
 )
