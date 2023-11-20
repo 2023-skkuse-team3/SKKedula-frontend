@@ -5,7 +5,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiObject {
-    private const val URL = "http://3.35.230.23:3000/"
+    private const val URL = "http://52.78.218.75:3000/"
 
     private val retrofit = Retrofit.Builder()
         .baseUrl(URL)

@@ -12,10 +12,10 @@ class MapViewModel : ViewModel() {
     val endLocation = MutableLiveData<String>()
 
     // Add a new LiveData for marker click
-    private val _markerClick = MutableLiveData<Study?>()
+    /*private val _markerClick = MutableLiveData<Study?>()
     val markerClicked: LiveData<Study?> = _markerClick
 
     fun onMarkerClicked(entrance: Study?) {
         _markerClick.value = entrance
-    }
+    }*/
 }

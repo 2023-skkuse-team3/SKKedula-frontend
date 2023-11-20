@@ -45,7 +45,7 @@ class MapPageFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_map_page, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    /*override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         mapViewModel.markerClicked.observe(viewLifecycleOwner) { clicked ->
@@ -62,7 +62,7 @@ class MapPageFragment : Fragment() {
                 navController.navigate(R.id.StudyDetailFragment)
             }
         }
-    }
+    }*/
 
     companion object {
         /**
