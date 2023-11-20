@@ -14,5 +14,9 @@ data class Studyspace(
     @SerializedName("Longitude")
     val longitude: Double,
     @SerializedName("Floor")
-    val floor: Int
+    val floor: Int,
+    @SerializedName("Address")
+    val address: String,
+    @SerializedName("Time")
+    val time: String
 )

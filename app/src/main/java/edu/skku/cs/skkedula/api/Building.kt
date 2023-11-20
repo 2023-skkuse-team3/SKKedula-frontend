@@ -3,11 +3,11 @@ package edu.skku.cs.skkedula.api
 import com.google.gson.annotations.SerializedName
 
 data class Building(
-    @SerializedName("Building_Num")
+    @SerializedName("Building_num")
     var buildingNum: String? = null,
-    @SerializedName("Building_Name")
+    @SerializedName("Building_name")
     val buildingName: String? = null,
-    @SerializedName("Room_Num")
+    @SerializedName("Room_num")
     val roomNum: String? = null
 ) {
     companion object {
