@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,6 +28,7 @@ import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import edu.skku.cs.skkedula.R
@@ -296,6 +298,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 position = LatLng(space.latitude, space.longitude)
                 icon = OverlayImage.fromResource(R.drawable.study_marker)
                 map = naverMap
+                tag = space
+            }
+            marker.onClickListener = Overlay.OnClickListener { overlay ->
+                val clickedMarker = overlay as? Marker
+                clickedMarker?.let { showCardView(it) }
+                true // Indicate that the click event has been handled
             }
             studymarkers.add(marker)
         }
@@ -306,23 +314,29 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         studymarkers.clear()
     }
 
-    /*private fun showCardView(marker: Marker) {
-        val study = marker.tag as? Study ?: return
+    private fun showCardView(marker: Marker) {
+        val study = marker.tag as? Studyspace ?: return
         val bundle = Bundle().apply {
             putString("studyName", study.name) // "studyName"은 전달할 키입니다.
         }
 
+        // TextView 업데이트
+        val studyNameTextView = activity?.findViewById<TextView>(R.id.studyname)
+        val addressTextView = activity?.findViewById<TextView>(R.id.address)
+        val timeTextView = activity?.findViewById<TextView>(R.id.time)
+
+        studyNameTextView?.text = study.name
+        addressTextView?.text = study.address
+        timeTextView?.text = study.time
+
         // NavController를 사용하여 StudyDetailFragment로 이동
         val navHostFragment = childFragmentManager.findFragmentById(R.id.card) as NavHostFragment
-        navHostFragment.navController.navigate(R.id.fragment, bundle)
+        navHostFragment.navController.navigate(R.id.studyDetailFragment, bundle)
 
         // Accessing the FragmentContainerView from the activity
         val cardView = activity?.findViewById<FragmentContainerView>(R.id.card)
         cardView?.visibility = View.VISIBLE
     }
-
-// studymarker 클릭 이벤트 핸들러
-    studymarker.setOnClickListener { marker -> showCardView(marker) }*/
 
 
     /*private fun performTestSearch() {

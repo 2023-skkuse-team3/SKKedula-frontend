@@ -4,6 +4,7 @@ package edu.skku.cs.skkedula.fragments.map
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import edu.skku.cs.skkedula.api.Studyspace
 
 class MapViewModel : ViewModel() {
     val startText = MutableLiveData<String>()
@@ -12,10 +13,10 @@ class MapViewModel : ViewModel() {
     val endLocation = MutableLiveData<String>()
 
     // Add a new LiveData for marker click
-    /*private val _markerClick = MutableLiveData<Study?>()
-    val markerClicked: LiveData<Study?> = _markerClick
+    private val _markerClick = MutableLiveData<Studyspace?>()
+    val markerClicked: LiveData<Studyspace?> = _markerClick
 
-    fun onMarkerClicked(entrance: Study?) {
-        _markerClick.value = entrance
-    }*/
+    fun onMarkerClicked(studyspace: Studyspace?) {
+        _markerClick.value = studyspace
+    }
 }
