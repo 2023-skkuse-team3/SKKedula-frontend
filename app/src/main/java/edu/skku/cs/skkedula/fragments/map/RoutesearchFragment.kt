@@ -55,7 +55,7 @@ class RoutesearchFragment : Fragment() {
         val endTextValue = mapViewModel.endLocation.value
         editstart.setText(startTextValue)
         editend.setText(endTextValue)
-        /*
+
         arguments?.getString("editstart")?.let {
             view.findViewById<EditText>(R.id.editstart).setText(it)
         }
@@ -64,6 +64,6 @@ class RoutesearchFragment : Fragment() {
             view.findViewById<EditText>(R.id.editend).setText(it)
         }
 
-         */
+
     }
 }
