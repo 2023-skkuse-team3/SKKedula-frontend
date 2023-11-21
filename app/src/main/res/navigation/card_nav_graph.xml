@@ -56,12 +56,27 @@
             app:destination="@id/courseDetail" />
     </fragment>
     <fragment
+        android:id="@+id/buildingDetailFragment"
+        android:name="edu.skku.cs.skkedula.BuildingDetailFragment"
+        android:label="BuildingDetail"
+        tools:layout="@layout/fragment_building_detail">
+        <action
+            android:id="@+id/action_studyDetailFragment_to_RoutesearchFragment"
+            app:destination="@id/routeSearchFragment" />
+    </fragment>
+    <fragment
         android:id="@+id/studyDetailFragment"
         android:name="edu.skku.cs.skkedula.StudyDetailFragment"
         android:label="StudyDetail"
         tools:layout="@layout/fragment_study_detail">
         <action
             android:id="@+id/action_studyDetailFragment_to_RoutesearchFragment"
-            app:destination="@id/RoutesearchFragment" />
+            app:destination="@id/routeSearchFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/routeSearchFragment"
+        android:name="edu.skku.cs.skkedula.fragments.map.RoutesearchFragment"
+        android:label="RouteSearch"
+        tools:layout="@layout/fragment_routesearch">
     </fragment>
 </navigation>

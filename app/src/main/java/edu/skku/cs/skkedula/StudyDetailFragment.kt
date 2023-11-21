@@ -53,7 +53,7 @@ class StudyDetailFragment : Fragment() {
     private fun navigateToRouteSearch(isStarting: Boolean) {
         val bundle = Bundle()
         bundle.putString(if (isStarting) "editstart" else "editend", studyName)
-        findNavController().navigate(R.id.RoutesearchFragment, bundle)
+        findNavController().navigate(R.id.routeSearchFragment, bundle)
     }
 
     override fun onDestroyView() {

@@ -39,6 +39,8 @@ import edu.skku.cs.skkedula.api.BuildingResponse
 import edu.skku.cs.skkedula.api.RetrofitService
 import edu.skku.cs.skkedula.api.Studyspace
 import edu.skku.cs.skkedula.databinding.FragmentMapBinding
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -55,6 +57,7 @@ data class Entrance(
 )
 
 class MapFragment : Fragment(), OnMapReadyCallback {
+
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!!
     private lateinit var naverMap: NaverMap
@@ -110,7 +113,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             ) {
 
                 // Trigger your search function
-                // performTestSearch()
+                //performTestSearch()
                 performSearch(searchEditText.text.toString())
 
                 // Hide the keyboard after search
@@ -297,7 +300,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         studySpaces.forEach { space ->
             val marker = Marker().apply {
                 position = LatLng(space.latitude, space.longitude)
-                icon = OverlayImage.fromResource(R.drawable.study_marker)
+                icon = OverlayImage.fromResource(R.drawable.icon_startpoint)
                 map = naverMap
                 tag = space
             }
@@ -324,6 +327,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val study = marker.tag as? Studyspace ?: return
         val bundle = Bundle().apply {
             putString("studyName", study.name) // "studyName"은 전달할 키입니다.
+            putString("address", study.address)
+            putString("time", study.time)
         }
 
         // TextView 업데이트
@@ -335,20 +340,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         addressTextView?.text = study.address
         timeTextView?.text = study.time
 
-        // NavController를 사용하여 StudyDetailFragment로 이동
+        // Make the card view visible
+        val cardView = activity?.findViewById<FragmentContainerView>(R.id.card)
+        cardView?.visibility = View.VISIBLE
+
+        // Navigate to StudyDetailFragment using NavController
+        // Check if the FragmentContainerView for the card is a NavHostFragment
         val navHostFragment = childFragmentManager.findFragmentById(R.id.card) as? NavHostFragment
         navHostFragment?.let {
             it.navController.navigate(R.id.studyDetailFragment, bundle)
-            val cardView = activity?.findViewById<FragmentContainerView>(R.id.card)
-            cardView?.visibility = View.VISIBLE
         } ?: run {
-            // 적절한 오류 처리 또는 로그 출력
-            Log.e("MapFragment", "NavHostFragment not found")
+            Log.e("MapFragment", "NavHostFragment not found or not set up correctly")
         }
-
-        // Accessing the FragmentContainerView from the activity
-        val cardView = activity?.findViewById<FragmentContainerView>(R.id.card)
-        cardView?.visibility = View.VISIBLE
     }
 
 
@@ -388,12 +391,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }*/
 
     private fun performSearch(searchText: String) {
+
         // 사용자 입력에 따라 적절한 Building 객체를 생성합니다.
         val buildingRequest = when {
             searchText.isDigitsOnly() && searchText.length > 4 -> Building.fromRoomNum(searchText.toInt())
             searchText.isDigitsOnly() -> Building.fromBuildingNum(searchText.toInt())
             else -> Building.fromName(searchText)
         }
+
+        // Retrofit 요청을 보내기 전에 요청 본문을 확인하고 로그 출력
+        val requestBody = Gson().toJson(buildingRequest)
+        Log.d("SearchDebug", "Request Body: $requestBody")
 
         // Retrofit을 사용하여 서버에 검색 요청을 보냅니다.
         retrofitService.searchBuilding(buildingRequest)

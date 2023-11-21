@@ -3,9 +3,12 @@ package edu.skku.cs.skkedula.api
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+
 
 object ApiObject {
-    private const val URL = "http://52.78.218.75:3000/"
+    private const val URL = "http://13.124.148.52:3000/"
 
     private val retrofit = Retrofit.Builder()
         .baseUrl(URL)

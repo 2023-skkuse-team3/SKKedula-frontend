@@ -66,6 +66,9 @@ dependencies {
     // add to use timeIntervalPicker
     implementation("io.github.ParkSangGwon:intervaltimepicker:1.0.0")
     implementation("nl.joery.timerangepicker:timerangepicker:1.0.0")
+    //임시 okhttp3
+    implementation("com.squareup.okhttp3:okhttp:4.9.1") // OkHttp 버전은 필요에 따라 변경 가능
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.1") // OkHttp 로깅 인터셉터 의존성 추가
     // end
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
     implementation("com.google.code.gson:gson:2.8.9")
