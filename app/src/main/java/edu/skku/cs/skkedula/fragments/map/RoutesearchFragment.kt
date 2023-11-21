@@ -40,6 +40,7 @@ class RoutesearchFragment : Fragment() {
             //transaction.addToBackStack("fragment_routesearch")
             transaction.commit()
         }
+
         return rootView
     }
 

@@ -28,6 +28,11 @@
         android:name="edu.skku.cs.skkedula.fragments.map.RouteresultFragment"
         android:label="map"
         tools:layout="@layout/fragment_routeresult"/>
+    <fragment
+        android:id="@+id/menu_routeresult2"
+        android:name="edu.skku.cs.skkedula.fragments.map.RouteresultFragment2"
+        android:label="map"
+        tools:layout="@layout/fragment_routeresult2"/>
 
     <!--Bookmark fragments-->
     <fragment

@@ -38,6 +38,8 @@ import edu.skku.cs.skkedula.api.DeletepathResponse
 import edu.skku.cs.skkedula.api.Savepath
 import edu.skku.cs.skkedula.api.SavepathResponse
 import edu.skku.cs.skkedula.databinding.FragmentRouteresultBinding
+import edu.skku.cs.skkedula.fragments.bookmark.Bookmark
+import edu.skku.cs.skkedula.fragments.bookmark.BookmarkViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -55,10 +57,10 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
     private var markersVisible = false
     private var startMarker: Marker?=null
     private var endMarker: Marker?=null
-    private var curposition: LatLng?=null
     private val markers = mutableListOf<Marker>()
     var avglat = 0.0
     var avglng = 0.0
+    private val bookmarkViewModel: BookmarkViewModel by activityViewModels()
 
 
     private fun applyDarkEffect(bookmarkbutton:ImageView) {
@@ -171,7 +173,7 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
     // return -1 if 현위치, return 0 if exact location not in db, else return 1
     private fun positionParser(str: String): Int {
         if (str.equals("현위치")) return -1
-        else if (str.substring(0, 2) == "27") {
+        else if (str.substring(0, 2) == "27" || str.substring(0, 2) == "26") {
             return 1
         }
         else return 0
@@ -287,7 +289,7 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
             }
         })
         //val initialCameraPosition = CameraPosition(LatLng(avglat/2, avglng/2), 16.0)
-        val initialCameraPosition = CameraPosition(LatLng(37.29422312, 126.9749711), 15.5)
+        val initialCameraPosition = CameraPosition(LatLng(37.29422312, 126.9749711), 15.2)
         naverMap.moveCamera(CameraUpdate.toCameraPosition(initialCameraPosition))
     }
 
@@ -361,7 +363,6 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
         rootView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
         var userId = LoginActivity.loginData.userId
 
-
         // Way control area
         if (!hasPermission()) {
             permissionLauncher.launch(permissions)
@@ -401,6 +402,24 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
         bookmarkbutton.setOnClickListener {
             //add start, end at db
             if (state == 0) {
+
+                val bookmarkObject = endMarker?.let { it1 ->
+                    startMarker?.let { it2 ->
+                        Bookmark(
+                            start=startString,
+                            end=endString,
+                            startlatlng = it2.position,
+                            endlatlng = it1.position,
+                            stopover=stopoverpoint
+                        )
+                    }
+                }
+                val items = bookmarkViewModel.items
+                if (bookmarkObject != null) {
+                    items.add(bookmarkObject)
+                    Log.d("DATA", "-------")
+                }
+
                 val saveObject = Savepath(
                     ID = userId,
                     Sequence= 1,

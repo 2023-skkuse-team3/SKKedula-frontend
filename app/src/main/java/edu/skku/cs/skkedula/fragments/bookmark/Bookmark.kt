@@ -1,11 +1,10 @@
 package edu.skku.cs.skkedula.fragments.bookmark
+import com.naver.maps.geometry.LatLng
 
 class Bookmark (
     val start: String,
     val end: String,
-    val start_latitude: String,
-    val start_longitude: String,
-    val end_latitude: String,
-    val end_longitude: String,
-    val stopover: String
+    val startlatlng: LatLng,
+    val endlatlng: LatLng,
+    val stopover: MutableList<LatLng>
 )
