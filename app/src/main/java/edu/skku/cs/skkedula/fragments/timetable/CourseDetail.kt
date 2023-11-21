@@ -17,6 +17,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
 import androidx.transition.Visibility
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import edu.skku.cs.skkedula.LoginActivity
 import edu.skku.cs.skkedula.R
@@ -24,6 +25,7 @@ import edu.skku.cs.skkedula.api.ApiObject
 import edu.skku.cs.skkedula.api.Message
 import edu.skku.cs.skkedula.api.UserCourse
 import edu.skku.cs.skkedula.fragments.map.MapViewModel
+import edu.skku.cs.skkedula.fragments.map.RouteresultFragment
 import edu.skku.cs.skkedula.fragments.map.RoutesearchFragment
 import org.w3c.dom.Text
 import retrofit2.Call
@@ -150,7 +152,7 @@ class CourseDetail : Fragment() {
         timetableViewModel.startPoint.observe(viewLifecycleOwner) { text ->
             val startPoint = view.findViewById<TextView>(R.id.startPointValue)
             startPoint.text = text
-            if (!startLocation.contains("현위치"))
+            if (!text.contains("현위치"))
                 startLocation = text.split(" ")[text.split(" ").size - 1]
         }
 
@@ -205,8 +207,13 @@ class CourseDetail : Fragment() {
             cardView.visibility = View.GONE
 
             // 화면 전환
+            //val buttomnavview = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
+            //buttomnavview.setOnItemReselectedListener { item ->
+                //R.id.menu_timetable -> {false}
+                //.id.menu_map = true
+            //}
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.nav_host_fragment_activity_main, RoutesearchFragment())
+            transaction.replace(R.id.nav_host_fragment_activity_main, RouteresultFragment())
             transaction.commit()
         }
     }
