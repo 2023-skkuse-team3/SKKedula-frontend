@@ -172,10 +172,12 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
 
     // return -1 if 현위치, return 0 if exact location not in db, else return 1
     private fun positionParser(str: String): Int {
+        if (str.length < 3) return -2
         if (str.equals("현위치")) return -1
         else if (str.substring(0, 2) == "27" || str.substring(0, 2) == "26") {
             return 1
         }
+        else if (str.substring(0, 2) == "도서") return 2
         else return 0
     }
 
@@ -186,6 +188,9 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
         mapViewModel.endLocation.observe(viewLifecycleOwner) { text ->
             endString = text
         }
+        if (startString.length == 1) startString = "현위치"
+        if (endString.length == 1) endString = "도서관 스터디룸"
+        Log.d("DATA", "-----${startString} ---- ${endString}------")
         this.naverMap = naverMap
         naverMap.locationSource = locationSource
         naverMap.uiSettings.isLocationButtonEnabled = true
@@ -204,6 +209,7 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
         var startObject = Building()
 
         // 하드코딩해야함! 현위치 좌표
+        if (positionParser(startString) == -2) startString = "현위치"
         if (positionParser(startString) == -1) {
             startMarker = Marker().apply {
                 icon = OverlayImage.fromResource(R.drawable.icon_startpoint)
@@ -264,30 +270,43 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
                 roomNum = endString
             )
         }
-        val searchbuilding2 = ApiObject.service.searchBuilding(endObject)
-        searchbuilding2.clone().enqueue(object: Callback<BuildingResponse> {
-            override fun onResponse(call: Call<BuildingResponse>, response: Response<BuildingResponse>) {
-                val buildingresponse = response.body()
-                var lat = 0.0
-                var lng = 0.0
-                avglat+=lat; avglng+=lng
-                lat = buildingresponse?.latitude!!
-                lng = buildingresponse.longitude
-                if(response.isSuccessful.not()){
-                    Log.d("DATA", "code=${response.code()}, message = ${lat}, ${lng}")
-                    return
+        if (positionParser(endString) != 2) {
+            val searchbuilding2 = ApiObject.service.searchBuilding(endObject)
+            searchbuilding2.clone().enqueue(object : Callback<BuildingResponse> {
+                override fun onResponse(
+                    call: Call<BuildingResponse>,
+                    response: Response<BuildingResponse>
+                ) {
+                    val buildingresponse = response.body()
+                    var lat = 0.0
+                    var lng = 0.0
+                    avglat += lat; avglng += lng
+                    lat = buildingresponse?.latitude!!
+                    lng = buildingresponse.longitude
+                    if (response.isSuccessful.not()) {
+                        Log.d("DATA", "code=${response.code()}, message = ${lat}, ${lng}")
+                        return
+                    }
+                    Log.d("DATA", "----------${lat}, ${lng}----------")
+                    endMarker = Marker().apply {
+                        icon = OverlayImage.fromResource(R.drawable.icon_endpoint)
+                    }
+                    endMarker?.position = LatLng(lat, lng)
+                    endMarker?.map = naverMap
                 }
-                Log.d("DATA", "----------${lat}, ${lng}----------")
-                endMarker = Marker().apply {
-                    icon = OverlayImage.fromResource(R.drawable.icon_endpoint)
+
+                override fun onFailure(call: Call<BuildingResponse>, t: Throwable) {
+                    Log.e("ERROR", t.toString())
                 }
-                endMarker?.position = LatLng(lat, lng)
-                endMarker?.map = naverMap
+            })
+        }
+        else {
+            endMarker = Marker().apply {
+                icon = OverlayImage.fromResource(R.drawable.icon_endpoint)
             }
-            override fun onFailure(call: Call<BuildingResponse>, t: Throwable) {
-                Log.e("ERROR", t.toString())
-            }
-        })
+            endMarker?.position = LatLng(37.293885,126.974871)
+            endMarker?.map = naverMap
+        }
         //val initialCameraPosition = CameraPosition(LatLng(avglat/2, avglng/2), 16.0)
         val initialCameraPosition = CameraPosition(LatLng(37.29422312, 126.9749711), 15.2)
         naverMap.moveCamera(CameraUpdate.toCameraPosition(initialCameraPosition))
@@ -497,8 +516,14 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         mapViewModel.startLocation.observe(viewLifecycleOwner) { text ->
             val editstart = view.findViewById<TextView>(R.id.startText)
-            editstart.text = text
-            startString = text
+            if (text.length < 2) {
+                editstart.text = "현위치"
+                startString = "현위치"
+            }
+            else {
+                editstart.text = text
+                endString = "현위치"
+            }
         }
         mapViewModel.endLocation.observe(viewLifecycleOwner) { text ->
             val editend = view.findViewById<TextView>(R.id.endText)

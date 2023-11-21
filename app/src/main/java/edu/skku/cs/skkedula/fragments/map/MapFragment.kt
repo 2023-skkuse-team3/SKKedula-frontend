@@ -24,6 +24,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraPosition
+import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
@@ -196,6 +198,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
             markersVisible = !markersVisible
         }
+        val initialCameraPosition = CameraPosition(LatLng(37.29422312, 126.9749711), 15.2)
+        naverMap.moveCamera(CameraUpdate.toCameraPosition(initialCameraPosition))
     }
 
     override fun onDestroyView() {

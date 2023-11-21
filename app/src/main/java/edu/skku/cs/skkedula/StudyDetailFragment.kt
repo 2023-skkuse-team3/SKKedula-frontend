@@ -48,11 +48,15 @@ class StudyDetailFragment : Fragment() {
         // Starting and Ending button click listeners
         binding.starting.setOnClickListener {
             // Navigate to RouteSearchFragment with "editstart" data
+            mapViewModel.startLocation.value = studyName
+            mapViewModel.endLocation.value = ""
             navigateToRouteSearch(true, studyName)
         }
 
         binding.ending.setOnClickListener {
             // Navigate to RouteSearchFragment with "editend" data
+            mapViewModel.startLocation.value = ""
+            mapViewModel.endLocation.value = studyName
             navigateToRouteSearch(false, studyName)
         }
 
