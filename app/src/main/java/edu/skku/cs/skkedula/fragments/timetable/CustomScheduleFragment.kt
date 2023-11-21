@@ -15,10 +15,19 @@ import androidx.core.view.children
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
+import edu.skku.cs.skkedula.LoginActivity
 import edu.skku.cs.skkedula.R
+import edu.skku.cs.skkedula.api.ApiObject
+import edu.skku.cs.skkedula.api.ApiObject8000
 import edu.skku.cs.skkedula.api.Course
 import edu.skku.cs.skkedula.api.CourseInfo
+import edu.skku.cs.skkedula.api.CustomCourse
+import edu.skku.cs.skkedula.api.Message
+import edu.skku.cs.skkedula.api.Url
 import edu.skku.cs.skkedula.databinding.FragmentCustomScheduleBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -51,6 +60,7 @@ class CustomScheduleFragment : Fragment() {
 
     lateinit var binding:FragmentCustomScheduleBinding
     private val timetableViewModel: TimetableViewModel by activityViewModels()
+    private var userId = LoginActivity.loginData.userId
 
     // time string을 1_12001300 형태로 바꿈
     private fun formatTimeString(day: String, start: String, end: String): String {
@@ -137,6 +147,29 @@ class CustomScheduleFragment : Fragment() {
                     val roomNum = location.text.toString().toInt()
 
                     // 커스텀 강의 추가 api 호출
+                    val callAddCustomSchedule = ApiObject.service.addCustomCourse(CustomCourse("1", scheduleName.text.toString(), formatTimeString(day.selectedItem.toString(), startTimeString, endTimeString), location.text.toString()))
+
+                    callAddCustomSchedule.clone().enqueue(object: Callback<Message> {
+
+                        override fun onResponse(call: Call<Message>, response: Response<Message>) {
+                            if(response.isSuccessful.not()){
+                                return
+                            }
+
+                            response.body()?.let{
+                                Log.d("OK", it.toString())
+
+                            } ?: run {
+                                Log.d("NG", "body is null")
+                            }
+                        }
+
+                        override fun onFailure(call: Call<Message>, t: Throwable) {
+                            Log.e("ERROR", t.toString())
+                            Toast.makeText(context, t.toString(), Toast.LENGTH_LONG).show()
+                        }
+
+                    })
 
                     Log.d("CUSTOM DAY", day.selectedItem.toString())
 

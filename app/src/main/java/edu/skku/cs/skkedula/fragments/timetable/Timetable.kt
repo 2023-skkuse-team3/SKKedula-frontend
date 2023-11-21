@@ -36,7 +36,7 @@ class Timetable : Fragment() {
     private var param2: String? = null
     private val day = arrayOf("월", "화", "수", "목", "금")
     private val colorList: List<String> = listOf(
-        "#F28585", "#F2B263", "#86A69D", "#4F6F8C", "#8980BF"
+        "#F28585", "#F2B263", "#86A69D", "#6d9dc9", "#9580bf", "#e38fc4"
     )
 
     private val timetableViewModel: TimetableViewModel by activityViewModels()
