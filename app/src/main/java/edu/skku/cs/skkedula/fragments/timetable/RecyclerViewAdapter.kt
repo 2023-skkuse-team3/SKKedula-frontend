@@ -34,8 +34,9 @@ class RecyclerViewAdapter(val itemList: List<Course>, val onClick: (Course) -> U
         if (input == null) {
             return "미지정"
         }
+        var input = input.replace(" ", "")
         if (input.contains(',')) {
-            val parts = input.split(", ")
+            val parts = input.split(",")
             val formattedTimes = parts.map { part ->
                 val (count, times) = part.split("_")
                 val dayString = when (count.toInt()) {
