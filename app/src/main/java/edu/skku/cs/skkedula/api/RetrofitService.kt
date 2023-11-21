@@ -25,15 +25,18 @@ interface RetrofitService {
     @POST("/timetable/searchByProfessor/")
     fun searchCourseByProfessor(@Body searchQuery: Professor) : Call<List<Course>>
 
-    @GET("/{userId}/timetables/courses")
-    fun getUserCourses(@Path("userId") userId: String): Call<List<Course>>
+    @GET("/timetables/courses")
+    fun getUserCourses(@Body data: UserId): Call<List<Course>>
+
+    @POST("/custom-courses")
+    fun addCustomCourse(@Body data: CustomCourse): Call<Message>
 
     @POST("/reset-timetable")
     fun resetTimetable(@Body data: UserId) : Call<Message>
 
     // URL 보낸 후 유저 강의 정보 가져오기
     @POST("/scrape_course_info")
-    fun postUserCourses(@Body data: UserId, @Query("url") url: String): Call<List<Course>>
+    fun postUserCourses(@Body data: Url): Call<UrlResponse>
 
     @POST("/timetables/delete-course")
     fun removeCourseFromTimetable(@Body body: UserCourse) : Call<Message>

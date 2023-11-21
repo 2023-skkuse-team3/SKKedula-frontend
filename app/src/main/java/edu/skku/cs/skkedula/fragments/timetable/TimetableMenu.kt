@@ -89,12 +89,12 @@ class TimetableMenu : Fragment() {
                 .setMessage("시간표를 삭제하시겠습니까?")
                 .setPositiveButton("확인",
                     DialogInterface.OnClickListener { dialog, id ->
-                        // 시간표 삭제하기 (API)
+
                         // user id 가져오기
                         var userId = LoginActivity.loginData.userId
                         // api interface 가져오기
                         val callResetTimetable = ApiObject.service.resetTimetable(UserId(userId))
-
+                        // 시간표 삭제하기 (API)
                         callResetTimetable.clone().enqueue(object: Callback<Message> {
 
                             override fun onResponse(call: Call<Message>, response: Response<Message>) {
