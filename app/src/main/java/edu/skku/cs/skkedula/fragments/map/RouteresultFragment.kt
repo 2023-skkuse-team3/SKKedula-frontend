@@ -403,6 +403,7 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
             stopoverpoint.forEach { point ->
                 waypoints.add(point)
             }
+            if (startString != "현위치") mapViewModel.stopover = stopoverpoint
             waypoints.add(endMarker?.position as LatLng)
             val pathOverlay = PathOverlay()
             pathOverlay.coords = waypoints

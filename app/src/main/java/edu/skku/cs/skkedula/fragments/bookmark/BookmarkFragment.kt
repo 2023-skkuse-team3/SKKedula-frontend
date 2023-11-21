@@ -56,7 +56,7 @@ class BookmarkFragment : Fragment() {
         val endLat = LatLng(37.294301, 126.976732)
         val stopoverList = mutableListOf(LatLng(37.29485663219833, 126.97587565874039), LatLng(37.29412794877511, 126.97576437025737))
         if (bookmarkViewModel.state == 0) {
-            items.add(Bookmark("26310", "23217", startLat, endLat, stopoverList))
+            //items.add(Bookmark("26310", "23217", startLat, endLat, stopoverList))
             bookmarkViewModel.state++
         }
 

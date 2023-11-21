@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.CameraUpdate
@@ -28,17 +29,21 @@ import com.naver.maps.map.util.FusedLocationSource
 import edu.skku.cs.skkedula.R
 import edu.skku.cs.skkedula.databinding.FragmentRouteresult2Binding
 import edu.skku.cs.skkedula.fragments.bookmark.BookmarkSearch
+import edu.skku.cs.skkedula.fragments.bookmark.BookmarkViewModel
 import kotlin.math.pow
 
 class RouteresultFragment2 : Fragment(), OnMapReadyCallback {
-    private lateinit var _binding: FragmentRouteresult2Binding
+    private var _binding: FragmentRouteresult2Binding?=null
     private val binding get() = _binding!!
+    //private val mapViewModel: MapViewModel by activityViewModels()
+    private lateinit var mapViewModel: MapViewModel
 
-    private var startString = "26310"
-    private var endString = "23217"
-    private var endpos = LatLng(37.294301, 126.976732)
-    private var startpos = LatLng(37.29501652, 126.9773477)
-    private var stopoverpoint = mutableListOf(LatLng(37.29485663219833, 126.97587565874039), LatLng(37.29412794877511, 126.97576437025737))
+    private var startString = "85713"
+    private var endString = "26312"
+    private var endpos = LatLng(37.295936, 126.975737)
+    private var startpos = LatLng(37.29517646, 126.9773843)
+    //private var stopoverpoint = mapViewModel.stopover
+    private lateinit var stopoverpoint: MutableList<LatLng>
     private var waypoints: MutableList<LatLng> = mutableListOf()
 
     private lateinit var startMarker: Marker
@@ -81,6 +86,8 @@ class RouteresultFragment2 : Fragment(), OnMapReadyCallback {
         naverMap.locationSource = locationSource
         naverMap.uiSettings.isLocationButtonEnabled = true
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
+        mapViewModel = ViewModelProvider(requireActivity()).get(MapViewModel::class.java)
+        stopoverpoint = mapViewModel.stopover
 
         startMarker = Marker().apply {
             icon = OverlayImage.fromResource(R.drawable.icon_startpoint)
@@ -95,7 +102,7 @@ class RouteresultFragment2 : Fragment(), OnMapReadyCallback {
         endMarker.map = naverMap
 
         waypoints.add(startMarker.position as LatLng)
-        stopoverpoint.forEach { point ->
+        stopoverpoint.reversed().forEach { point ->
             waypoints.add(point)
             val waypointMarker = Marker()
             waypointMarker.position = point
@@ -141,6 +148,7 @@ class RouteresultFragment2 : Fragment(), OnMapReadyCallback {
         _binding = FragmentRouteresult2Binding.inflate(inflater, container, false)
         val rootView = binding.root
         rootView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+        mapViewModel = ViewModelProvider(requireActivity()).get(MapViewModel::class.java)
 
         // Way control area
         if (!hasPermission()) {
@@ -200,4 +208,8 @@ class RouteresultFragment2 : Fragment(), OnMapReadyCallback {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

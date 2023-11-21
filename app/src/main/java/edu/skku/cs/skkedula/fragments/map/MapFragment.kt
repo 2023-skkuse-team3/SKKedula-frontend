@@ -98,7 +98,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        mapViewModel.startLocation.value = ""
         // Retrofit 인스턴스 초기화
         val retrofit = Retrofit.Builder()
             .baseUrl("https://example.com/")
