@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import edu.skku.cs.skkedula.LoginActivity
 import edu.skku.cs.skkedula.R
 import edu.skku.cs.skkedula.api.ApiObject
@@ -34,13 +35,15 @@ class BookmarkFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentBookmarkBinding.inflate(inflater, container, false)
+        val rootView = binding.root
+        rootView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+
         var items = arrayListOf<Bookmark>()
 
         var userId = LoginActivity.loginData.userId
         //Log.d("DATA", "-----${userId}------")
-        items.add(Bookmark(userId, "2", 1, "-", "-", "-", "-"))
-        items.add(Bookmark("1", "2", 2, "-", "-", "-", "-"))
-        items.add(Bookmark("1", "2", 3, "-", "-", "-", "-"))
+        items.add(Bookmark("26102", "85712", "-", "-", "-", "-", "-"))
+
         val listAdapter = BookmarkAdapter(requireContext(), items)
         val mainList = binding.scrollview
         mainList.adapter = listAdapter
@@ -81,7 +84,6 @@ class BookmarkFragment : Fragment() {
             transaction.commit()
         }
 
-        val rootView = binding.root
         return rootView
     }
 

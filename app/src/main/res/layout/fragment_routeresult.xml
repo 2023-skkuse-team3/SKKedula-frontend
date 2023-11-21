@@ -136,7 +136,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:fontFamily="@font/poppins_bold"
-        android:text="8분"
         android:textColor="#F08676"
         android:textSize="20dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
@@ -149,7 +148,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:fontFamily="@font/poppins_bold"
-        android:text="594m"
         android:textColor="#F08676"
         android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -196,5 +194,37 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/map3" />
+
+    <android.widget.Button
+        android:id="@+id/cancel"
+        android:layout_width="160dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_white"
+        android:fontFamily="@font/poppins_regular"
+        android:fontWeight="600"
+        android:text="취소"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline8"
+        app:layout_constraintTop_toTopOf="@+id/guideline7" />
+
+    <android.widget.Button
+        android:id="@+id/apply"
+        android:layout_width="160dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button_green"
+        android:fontFamily="@font/poppins_regular"
+        android:fontWeight="600"
+        android:text="완료"
+        android:textColor="#FFFFFF"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/guideline8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline7" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
