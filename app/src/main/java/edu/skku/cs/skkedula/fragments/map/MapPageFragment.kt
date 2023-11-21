@@ -49,7 +49,7 @@ class MapPageFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         mapViewModel.markerClicked.observe(viewLifecycleOwner) { clicked ->
-            if (true) {
+            if (clicked != null) { // 수정: clicked가 null이 아닐 때만 실행
                 // Perform the same actions as the editButton click
                 val targetView = requireActivity().findViewById<FragmentContainerView>(R.id.card)
                 val bottomUpAnimation =

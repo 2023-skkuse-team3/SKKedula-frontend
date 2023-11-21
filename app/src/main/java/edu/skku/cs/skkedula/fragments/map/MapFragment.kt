@@ -300,7 +300,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         studySpaces.forEach { space ->
             val marker = Marker().apply {
                 position = LatLng(space.latitude, space.longitude)
-                icon = OverlayImage.fromResource(R.drawable.icon_startpoint)
+                icon = OverlayImage.fromResource(R.drawable.study_marker)
                 map = naverMap
                 tag = space
             }
@@ -435,7 +435,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val marker = Marker().apply {
             position = LatLng(latitude, longitude)
             map = naverMap
-            icon = OverlayImage.fromResource(R.drawable.study_marker)
+            icon = OverlayImage.fromResource(R.drawable.icon_startpoint)
             tag = buildingName // Building 이름 저장
         }
         marker.onClickListener = Overlay.OnClickListener { overlay ->
@@ -466,3 +466,4 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 }
+

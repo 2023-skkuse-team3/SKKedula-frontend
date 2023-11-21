@@ -19,7 +19,7 @@
             android:value="tie6ri1zft" />
         <activity
             android:name=".SkkedulaActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".SignupActivity"
             android:exported="false" />
