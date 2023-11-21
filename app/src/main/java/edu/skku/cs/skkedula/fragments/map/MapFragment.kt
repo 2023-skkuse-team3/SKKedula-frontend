@@ -75,6 +75,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var studymarkersVisible = false
     private val markers = mutableListOf<Marker>()
     private val studymarkers = mutableListOf<Marker>()
+    private var activeCardFragment: String? = null
 
     // ActivityResultLauncher 선언
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
@@ -346,7 +347,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         // Navigate to StudyDetailFragment using NavController
         // Check if the FragmentContainerView for the card is a NavHostFragment
-        val navHostFragment = childFragmentManager.findFragmentById(R.id.card) as? NavHostFragment
+        val navHostFragment = activity?.supportFragmentManager?.findFragmentById(R.id.card) as? NavHostFragment
         navHostFragment?.let {
             it.navController.navigate(R.id.studyDetailFragment, bundle)
         } ?: run {
@@ -392,8 +393,34 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private fun performSearch(searchText: String) {
 
+        // 기존 카드뷰 숨기기
+        hideCardView()
+
+        //데이터 하드코딩
+        if (searchText == "27323") {
+            // 하드 코딩된 데이터로 위치 정보 설정
+            val latitude = 37.2954353 // 임의의 위도
+            val longitude = 126.9763128 // 임의의 경도
+            val buildingName = "제2공학관27동" // 건물 이름
+
+            // 지도에 하드 코딩된 위치 정보를 추가
+            addMarkerToMap(latitude, longitude, buildingName)
+
+            // ViewModel에 건물 데이터 전달
+            mapViewModel.onBuildingDataReceived(BuildingResponse(buildingName, latitude, longitude))
+        } else if (searchText == "40") {
+            // 두 번째 하드 코딩된 데이터로 위치 정보 설정
+            val latitude = 37.291664 // 임의의 위도
+            val longitude = 126.977916 // 임의의 경도
+            val buildingName = "반도체관" // 건물 이름
+
+            // 지도에 두 번째 하드 코딩된 위치 정보를 추가
+            addMarkerToMap(latitude, longitude, buildingName)
+
+            // ViewModel에 건물 데이터 전달
+            mapViewModel.onBuildingDataReceived(BuildingResponse(buildingName, latitude, longitude))
         // 사용자 입력에 따라 적절한 Building 객체를 생성합니다.
-        val buildingRequest = when {
+        /*val buildingRequest = when {
             searchText.isDigitsOnly() && searchText.length > 4 -> Building.fromRoomNum(searchText.toInt())
             searchText.isDigitsOnly() -> Building.fromBuildingNum(searchText.toInt())
             else -> Building.fromName(searchText)
@@ -414,7 +441,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                         val buildingResponse = response.body()
                         buildingResponse?.let {
                             // 지도에 마커 추가
-                            addMarkerToMap(it.latitude, it.longitude, it.buildingName)
+                            addMarkerToMap(it.buildingName, it.latitude, it.longitude)
                             // ViewModel에 건물 데이터 전달
                             mapViewModel.onBuildingDataReceived(it)
                         }
@@ -427,11 +454,64 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 override fun onFailure(call: Call<BuildingResponse>, t: Throwable) {
                     // 네트워크 오류 처리
                     showToast("네트워크 오류: ${t.message}")
-                }
-            })
+                }*/
+            }//)
     }
 
-    private fun addMarkerToMap(latitude: Double, longitude: Double, buildingName: String) {
+    //하드코딩용
+    private fun addMarkerToMap(
+        latitude: Double,
+        longitude: Double,
+        buildingName: String
+    ) {
+        val marker = Marker().apply {
+            position = LatLng(latitude, longitude)
+            map = naverMap
+            icon = OverlayImage.fromResource(R.drawable.icon_startpoint)
+            tag = buildingName // 건물 이름을 태그로 저장
+        }
+        marker.onClickListener = Overlay.OnClickListener { overlay ->
+            val clickedMarker = overlay as? Marker
+            clickedMarker?.let {
+                // 클릭한 마커의 태그로 건물 이름을 가져옴
+                val buildingName = it.tag as? String
+                buildingName?.let {
+                    // 클릭한 건물 이름으로 BuildingDetailFragment로 이동
+                    showBuildingCardView(buildingName)
+                }
+            }
+            true
+        }
+        markers.add(marker)
+    }
+
+    private fun showBuildingCardView(buildingName: String) {
+        Log.d("MapFragment", "Navigating to BuildingDetailFragment with buildingName: $buildingName")
+
+        val bundle = Bundle().apply {
+            putString("buildingName", buildingName) // "buildingName"은 전달할 키입니다.
+        }
+
+        // TextView 업데이트
+        val buildingNameTextView = activity?.findViewById<TextView>(R.id.buildingname)
+
+        buildingNameTextView?.text = buildingName
+
+        // Make the card view visible
+        val cardView = activity?.findViewById<FragmentContainerView>(R.id.card)
+        cardView?.visibility = View.VISIBLE
+
+        // Navigate to BuildingDetailFragment using NavController
+        // Check if the FragmentContainerView for the card is a NavHostFragment
+        val navHostFragment = activity?.supportFragmentManager?.findFragmentById(R.id.card) as? NavHostFragment
+        navHostFragment?.let {
+            it.navController.navigate(R.id.buildingDetailFragment, bundle)
+        } ?: run {
+            Log.e("MapFragment", "NavHostFragment not found or not set up correctly")
+        }
+    }
+
+    /*private fun addMarkerToMap(buildingName: String, latitude: Double, longitude: Double) {
         val marker = Marker().apply {
             position = LatLng(latitude, longitude)
             map = naverMap
@@ -457,7 +537,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
+    }*/
 
 
     private fun hideKeyboard() {
@@ -465,5 +545,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
+
+    private fun hideCardView() {
+        val cardView = activity?.findViewById<FragmentContainerView>(R.id.card)
+        cardView?.visibility = View.GONE
+    }
+
 }
 

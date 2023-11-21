@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -30,6 +31,8 @@ class RoutesearchFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentRoutesearchBinding.inflate(inflater, container, false)
+        val rootView = binding.root
+        rootView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
         val buttonSearch = binding.searchbutton
         buttonSearch.setOnClickListener{
             val transaction = parentFragmentManager.beginTransaction()
@@ -37,7 +40,6 @@ class RoutesearchFragment : Fragment() {
             //transaction.addToBackStack("fragment_routesearch")
             transaction.commit()
         }
-        val rootView = binding.root
         return rootView
     }
 

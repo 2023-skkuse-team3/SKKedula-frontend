@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_nav_graph"
-    app:startDestination="@id/studyDetailFragment">
+    app:startDestination="@id/courseDetail">
 
     <fragment
         android:id="@+id/courseDetail"
@@ -19,6 +19,12 @@
         <action
             android:id="@+id/action_courseDetail_to_courseSearchFragment"
             app:destination="@id/courseSearchFragment" />
+        <action
+            android:id="@+id/action_courseDetail_to_buildingDetailFragment"
+            app:destination="@id/buildingDetailFragment" />
+        <action
+            android:id="@+id/action_courseDetail_to_studyDetailFragment"
+            app:destination="@id/studyDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/timetableMenu"
@@ -61,7 +67,7 @@
         android:label="BuildingDetail"
         tools:layout="@layout/fragment_building_detail">
         <action
-            android:id="@+id/action_studyDetailFragment_to_RoutesearchFragment"
+            android:id="@+id/action_buildingDetailFragment_to_RoutesearchFragment"
             app:destination="@id/routeSearchFragment" />
     </fragment>
     <fragment

@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import edu.skku.cs.skkedula.databinding.FragmentBuildingDetailBinding
 import edu.skku.cs.skkedula.fragments.map.MapViewModel
+import edu.skku.cs.skkedula.fragments.map.RoutesearchFragment
 
 class BuildingDetailFragment : Fragment() {
     private var buildingName: String? = null
@@ -39,29 +41,51 @@ class BuildingDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // ViewModel에서 buildingData 관찰. 람다를 괄호 밖으로 이동
-        mapViewModel.buildingData.observe(viewLifecycleOwner) { buildingData ->
-            // UI 업데이트
-            binding.buildingname.text = buildingData.buildingName
-        }
-
-        // Update the entrance name
         binding.buildingname.text = buildingName
 
         // Starting and Ending button click listeners
         binding.starting.setOnClickListener {
-            navigateToRouteSearch(true)
+            navigateToRouteSearch(true, buildingName)
         }
 
         binding.ending.setOnClickListener {
-            navigateToRouteSearch(false)
+            navigateToRouteSearch(false, buildingName)
+        }
+
+        // 기존 관찰자 제거
+        mapViewModel.buildingData.removeObservers(viewLifecycleOwner)
+
+        // Observe the LiveData for marker click
+        mapViewModel.buildingData.observe(viewLifecycleOwner) { buildingResponse ->
+            // buildingResponse 객체를 사용하여 UI 업데이트
+            if (buildingResponse != null) {
+                // 예: 건물 이름과 다른 정보를 UI에 표시
+                binding.buildingname.text = buildingResponse.buildingName
+                // 추가적인 UI 업데이트...
+            }
         }
     }
 
-    private fun navigateToRouteSearch(isStarting: Boolean) {
+    private fun hideCardView() {
+        val cardView = activity?.findViewById<FragmentContainerView>(R.id.card)
+        cardView?.visibility = View.GONE
+    }
+
+    private fun navigateToRouteSearch(isStarting: Boolean, buildingName: String?) {
         val bundle = Bundle()
         bundle.putString(if (isStarting) "editstart" else "editend", buildingName)
-        findNavController().navigate(R.id.RoutesearchFragment, bundle)
+
+        val routesearchFragment = RoutesearchFragment()
+        routesearchFragment.arguments = bundle
+
+        // RoutesearchFragment로 이동 전 카드뷰 숨기기
+        hideCardView()
+
+
+        // RoutesearchFragment로 이동
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.nav_host_fragment_activity_main, routesearchFragment)
+            .commit()
     }
 
     override fun onDestroyView() {

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import edu.skku.cs.skkedula.databinding.FragmentBuildingDetailBinding
@@ -55,11 +56,23 @@ class StudyDetailFragment : Fragment() {
             navigateToRouteSearch(false, studyName)
         }
 
+        // 기존 관찰자 제거
+        mapViewModel.markerClicked.removeObservers(viewLifecycleOwner)
+
         // Observe the LiveData for marker click
-        mapViewModel.markerClicked.observe(viewLifecycleOwner) { clickedStudyName ->
-            // Handle marker click event
-            // You can use clickedStudyName as needed
+        // Observe the LiveData for marker click
+        mapViewModel.markerClicked.observe(viewLifecycleOwner) { clickedStudyspace ->
+            if (clickedStudyspace != null) {
+                // 클릭된 스터디 공간의 이름을 사용하여 UI 업데이트
+                binding.studyname.text = clickedStudyspace.name
+                // 추가적인 UI 업데이트...
+            }
         }
+    }
+
+    private fun hideCardView() {
+        val cardView = activity?.findViewById<FragmentContainerView>(R.id.card)
+        cardView?.visibility = View.GONE
     }
 
     private fun navigateToRouteSearch(isStarting: Boolean, studyName: String?) {
@@ -68,6 +81,9 @@ class StudyDetailFragment : Fragment() {
 
         val routesearchFragment = RoutesearchFragment()
         routesearchFragment.arguments = bundle
+
+        // RoutesearchFragment로 이동 전 카드뷰 숨기기
+        hideCardView()
 
         // RoutesearchFragment로 이동
         requireActivity().supportFragmentManager.beginTransaction()
