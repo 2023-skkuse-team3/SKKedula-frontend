@@ -215,7 +215,9 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
                 icon = OverlayImage.fromResource(R.drawable.icon_startpoint)
             }
             // 하드코딩 lat, lng
-            startMarker?.position = LatLng(37.29422312, 126.9749711)
+            //startMarker?.position = LatLng(37.29422312, 126.9749711)
+            startMarker?.position = LatLng(37.29662728572387, 126.97542827360417)
+
             startMarker?.map = naverMap
         }
         else if (positionParser(startString) == 0) {
