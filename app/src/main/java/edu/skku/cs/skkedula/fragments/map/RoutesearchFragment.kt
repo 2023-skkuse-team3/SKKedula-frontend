@@ -26,50 +26,16 @@ import com.naver.maps.map.util.FusedLocationSource
 import edu.skku.cs.skkedula.R
 import edu.skku.cs.skkedula.databinding.FragmentRoutesearchBinding
 
-class RoutesearchFragment : Fragment(), OnMapReadyCallback {
+class RoutesearchFragment : Fragment() {
     private lateinit var _binding: FragmentRoutesearchBinding
     private val binding get() = _binding!!
     private val mapViewModel: MapViewModel by activityViewModels()
-    private val permissions = arrayOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-    )
-    private lateinit var locationSource: FusedLocationSource
-    private val locationPermissionRequestCode = 5000
 
-    private fun initMapView() {
-        val mapFragment =
-            childFragmentManager.findFragmentById(R.id.map2) as MapFragment?
-                ?: MapFragment.newInstance().also {
-                    childFragmentManager.beginTransaction()
-                        .add(R.id.map, it).commit()
-                }
-        mapFragment.getMapAsync(this)
-        locationSource = FusedLocationSource(this, locationPermissionRequestCode)
-    }
-
-    private fun hasPermission(): Boolean {
-        return permissions.all {
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                it
-            ) == PackageManager.PERMISSION_GRANTED
-        }
-    }
     // ActivityResultLauncher 선언
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // ActivityResultLauncher 초기화
-        permissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-                val granted = permissions.entries.all { it.value }
-                if (granted) {
-                    initMapView()
-                }
-                // 여기에 권한 거부에 대한 처리 로직 추가 (옵션)
-            }
     }
 
     override fun onCreateView(
@@ -86,13 +52,6 @@ class RoutesearchFragment : Fragment(), OnMapReadyCallback {
             transaction.replace(R.id.nav_host_fragment_activity_main, RouteresultFragment())
             //transaction.addToBackStack("fragment_routesearch")
             transaction.commit()
-        }
-
-        // 위치 권한 확인 및 요청
-        if (!hasPermission()) {
-            permissionLauncher.launch(permissions)
-        } else {
-            initMapView()
         }
         return rootView
     }
@@ -115,10 +74,5 @@ class RoutesearchFragment : Fragment(), OnMapReadyCallback {
         arguments?.getString("editend")?.let {
             view.findViewById<EditText>(R.id.editend).setText(it)
         }
-    }
-
-    override fun onMapReady(naverMap: NaverMap) {
-        val initialCameraPosition = CameraPosition(LatLng(37.29422312, 126.9749711), 15.2)
-        naverMap.moveCamera(CameraUpdate.toCameraPosition(initialCameraPosition))
     }
 }
