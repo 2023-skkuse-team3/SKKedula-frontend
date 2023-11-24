@@ -406,7 +406,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             val latitude = 37.2954353 // 임의의 위도
             val longitude = 126.9763128 // 임의의 경도
             val buildingName = "제2공학관27동" // 건물 이름
-
+            removeMarkersFromMap()
             // 지도에 하드 코딩된 위치 정보를 추가
             addMarkerToMap(latitude, longitude, buildingName)
 
@@ -417,7 +417,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             val latitude = 37.291664 // 임의의 위도
             val longitude = 126.977916 // 임의의 경도
             val buildingName = "반도체관" // 건물 이름
-
+            removeMarkersFromMap()
             // 지도에 두 번째 하드 코딩된 위치 정보를 추가
             addMarkerToMap(latitude, longitude, buildingName)
 

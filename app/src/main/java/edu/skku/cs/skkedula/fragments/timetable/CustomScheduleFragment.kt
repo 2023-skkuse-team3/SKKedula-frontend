@@ -166,7 +166,7 @@ class CustomScheduleFragment : Fragment() {
 
                         override fun onFailure(call: Call<Message>, t: Throwable) {
                             Log.e("ERROR", t.toString())
-                            Toast.makeText(context, t.toString(), Toast.LENGTH_LONG).show()
+                            //Toast.makeText(context, t.toString(), Toast.LENGTH_LONG).show()
                         }
 
                     })
