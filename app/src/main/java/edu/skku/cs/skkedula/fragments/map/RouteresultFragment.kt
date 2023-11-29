@@ -208,13 +208,12 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
 
         var startObject = Building()
 
-        // 하드코딩해야함! 현위치 좌표
+        // 현위치 좌표
         if (positionParser(startString) == -2) startString = "현위치"
         if (positionParser(startString) == -1) {
             startMarker = Marker().apply {
                 icon = OverlayImage.fromResource(R.drawable.icon_startpoint)
             }
-            // 하드코딩 lat, lng
             //startMarker?.position = LatLng(37.29422312, 126.9749711)
             startMarker?.position = LatLng(37.29662728572387, 126.97542827360417)
 
@@ -404,6 +403,10 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
                 waypoints.add(point)
             }
             if (startString != "현위치") mapViewModel.stopover = stopoverpoint
+            mapViewModel.startCoordinate = startMarker!!.position
+            mapViewModel.endCoordinate = endMarker!!.position
+            mapViewModel.startText.value = startString
+            mapViewModel.endText.value = endString
             waypoints.add(endMarker?.position as LatLng)
             val pathOverlay = PathOverlay()
             pathOverlay.coords = waypoints
@@ -442,41 +445,49 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
                     Log.d("DATA", "-------")
                 }
 
-                val saveObject = Savepath(
-                    ID = userId,
-                    Sequence= 1,
-                    Stopover_count = 0,
-                    Start_latitude = 37.29539,
-                    Start_longitude = 126.97630,
-                    End_latitude = 37.29539,
-                    End_longitude = 126.97630,
-                    Stopover = "_"
-                )
-                val addBookmark_ = ApiObject.service.savePath(saveObject)
-                addBookmark_.clone().enqueue(object: Callback<SavepathResponse> {
-                    override fun onResponse(call: Call<SavepathResponse>, response: Response<SavepathResponse>) {
-                        val savepathresponse = response.body()
-                        val statusmessage = savepathresponse?.message
+                val saveObject = startMarker?.position?.let { it1 ->
+                    endMarker?.position?.let { it2 ->
+                        Savepath(
+                            ID = userId,
+                            Sequence= items.size + 1,
+                            Stopover_count = stopoverpoint.size,
+                            Start_latitude = it1.latitude,
+                            Start_longitude = startMarker!!.position.longitude,
+                            End_latitude = it2.latitude,
+                            End_longitude = endMarker!!.position.longitude,
+                            Stopover = "_"
+                        )
+                    }
+                }
+                val addBookmark_ = saveObject?.let { it1 -> ApiObject.service.savePath(it1) }
+                if (addBookmark_ != null) {
+                    addBookmark_.clone().enqueue(object: Callback<SavepathResponse> {
+                        override fun onResponse(call: Call<SavepathResponse>, response: Response<SavepathResponse>) {
+                            val savepathresponse = response.body()
+                            val statusmessage = savepathresponse?.message
 
-                        if(response.isSuccessful.not()){
+                            if(response.isSuccessful.not()){
+                                Log.d("DATA", "code=${response.code()}, message = $statusmessage")
+                                return
+                            }
                             Log.d("DATA", "code=${response.code()}, message = $statusmessage")
-                            return
                         }
-                        Log.d("DATA", "code=${response.code()}, message = $statusmessage")
-                    }
-                    override fun onFailure(call: Call<SavepathResponse>, t: Throwable) {
-                        Log.e("ERROR", t.toString())
-                    }
-                })
+
+                        override fun onFailure(call: Call<SavepathResponse>, t: Throwable) {
+                            Log.e("ERROR", t.toString())
+                        }
+                    })
+                }
                 showToast("즐겨찾기에 경로가 추가되었습니다.")
                 removeDarkEffect(bookmarkbutton)
                 state=1
             }
             //delete start, end at db
             else {
+                val items = bookmarkViewModel.items
                 val deleteObject = Deletepath(
                     ID= userId,
-                    Sequence = 1
+                    Sequence = items.size + 1
                 )
                 val deleteBookmark_ = ApiObject.service.deletePath(deleteObject)
                 deleteBookmark_.clone().enqueue(object: Callback<DeletepathResponse> {

@@ -13,7 +13,9 @@ class MapViewModel : ViewModel() {
     val endText = MutableLiveData<String>()
     val startLocation = MutableLiveData<String>()
     val endLocation = MutableLiveData<String>()
+    var startCoordinate = LatLng(0.0, 0.0)
     var stopover: MutableList<LatLng> =  mutableListOf()
+    var endCoordinate = LatLng(0.0, 0.0)
 
     // Add a new LiveData for marker click
     private val _markerClick = MutableLiveData<Studyspace?>()

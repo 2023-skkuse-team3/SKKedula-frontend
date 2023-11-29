@@ -19,6 +19,7 @@ import edu.skku.cs.skkedula.api.Savepath
 import edu.skku.cs.skkedula.api.SavepathResponse
 import edu.skku.cs.skkedula.databinding.FragmentBookmarkBinding
 import edu.skku.cs.skkedula.fragments.map.MapFragment
+import edu.skku.cs.skkedula.fragments.map.MapViewModel
 import edu.skku.cs.skkedula.fragments.map.RouteresultFragment
 import edu.skku.cs.skkedula.fragments.map.RouteresultFragment2
 import edu.skku.cs.skkedula.fragments.map.RoutesearchFragment
@@ -29,6 +30,7 @@ import retrofit2.Response
 class BookmarkFragment : Fragment() {
     private var _binding: FragmentBookmarkBinding? = null
     private val bookmarkViewModel: BookmarkViewModel by activityViewModels()
+    private val mapViewModel: MapViewModel by activityViewModels()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -47,19 +49,6 @@ class BookmarkFragment : Fragment() {
         var items = bookmarkViewModel.items
         var userId = LoginActivity.loginData.userId
 
-        // 26310 to 23217:
-        // start: 37.29501652, 126.9773477
-        // stopover1: 37.29485663219833, 126.97587565874039
-        // stopover2: 37.29412794877511, 126.97576437025737
-        // end: 37.294301, 126.976732
-        val startLat = LatLng(37.29485663219833, 126.97587565874039)
-        val endLat = LatLng(37.294301, 126.976732)
-        val stopoverList = mutableListOf(LatLng(37.29485663219833, 126.97587565874039), LatLng(37.29412794877511, 126.97576437025737))
-        if (bookmarkViewModel.state == 0) {
-            //items.add(Bookmark("26310", "23217", startLat, endLat, stopoverList))
-            bookmarkViewModel.state++
-        }
-
         Log.d("DATA", "${items.size}")
 
         val listAdapter = BookmarkAdapter(requireContext(), items)
@@ -68,12 +57,18 @@ class BookmarkFragment : Fragment() {
 
         mainList.setOnItemClickListener { parent, view, position, id ->
             val Item = items[position]
-
+            mapViewModel.startText.value = Item.start
+            mapViewModel.endText.value = Item.end
+            mapViewModel.startLocation.value = Item.start
+            mapViewModel.endLocation.value = Item.end
+            mapViewModel.startCoordinate = Item.startlatlng
+            mapViewModel.endCoordinate = Item.endlatlng
+            mapViewModel.stopover = Item.stopover
 
             // todo: go to RouteresultFragment with start, end string
             val getObject = Getpath(
                 ID = userId,
-                Sequence= 1
+                Sequence= position
             )
             val getBookmark_ = ApiObject.service.getPath(getObject)
             getBookmark_.clone().enqueue(object: Callback<GetpathResponse> {

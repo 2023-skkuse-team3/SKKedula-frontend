@@ -38,10 +38,10 @@ class RouteresultFragment2 : Fragment(), OnMapReadyCallback {
     //private val mapViewModel: MapViewModel by activityViewModels()
     private lateinit var mapViewModel: MapViewModel
 
-    private var startString = "85713"
-    private var endString = "26312"
-    private var endpos = LatLng(37.295936, 126.975737)
-    private var startpos = LatLng(37.29517646, 126.9773843)
+    private lateinit var startString: String
+    private lateinit var endString: String
+    private lateinit var endpos: LatLng
+    private lateinit var startpos: LatLng
     //private var stopoverpoint = mapViewModel.stopover
     private lateinit var stopoverpoint: MutableList<LatLng>
     private var waypoints: MutableList<LatLng> = mutableListOf()
@@ -88,6 +88,10 @@ class RouteresultFragment2 : Fragment(), OnMapReadyCallback {
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
         mapViewModel = ViewModelProvider(requireActivity()).get(MapViewModel::class.java)
         stopoverpoint = mapViewModel.stopover
+        startString = mapViewModel.startText.toString()
+        endString = mapViewModel.endText.toString()
+        endpos = mapViewModel.startCoordinate
+        startpos = mapViewModel.endCoordinate
 
         startMarker = Marker().apply {
             icon = OverlayImage.fromResource(R.drawable.icon_startpoint)
@@ -162,6 +166,9 @@ class RouteresultFragment2 : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mapViewModel = ViewModelProvider(requireActivity()).get(MapViewModel::class.java)
+        startString = mapViewModel.startText.value.toString()
+        endString = mapViewModel.endText.value.toString()
         val editstart = view.findViewById<TextView>(R.id.startText)
         editstart.text = startString
         val editend = view.findViewById<TextView>(R.id.endText)
