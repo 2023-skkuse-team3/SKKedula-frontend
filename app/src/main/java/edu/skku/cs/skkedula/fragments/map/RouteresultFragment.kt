@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -37,6 +38,7 @@ import edu.skku.cs.skkedula.api.Deletepath
 import edu.skku.cs.skkedula.api.DeletepathResponse
 import edu.skku.cs.skkedula.api.Savepath
 import edu.skku.cs.skkedula.api.SavepathResponse
+import edu.skku.cs.skkedula.api.Studyspace
 import edu.skku.cs.skkedula.databinding.FragmentRouteresultBinding
 import edu.skku.cs.skkedula.fragments.bookmark.Bookmark
 import edu.skku.cs.skkedula.fragments.bookmark.BookmarkViewModel
@@ -143,7 +145,7 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var naverMap: NaverMap
     private lateinit var locationSource: FusedLocationSource
-    private val locationPermissionRequestCode = 5000
+    private val locationPermissionRequestCode = 1000
     private val permissions = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION
@@ -177,8 +179,8 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
         else if (str.substring(0, 2) == "27" || str.substring(0, 2) == "26") {
             return 1
         }
-        else if (str.substring(0, 2) == "도서") return 2
-        else return 0
+        else if (str.substring(0, 1) >= "0" && str.substring(0, 1) <= "9") return 0
+        else return 2
     }
 
     override fun onMapReady(naverMap: NaverMap) {
@@ -214,8 +216,14 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
             startMarker = Marker().apply {
                 icon = OverlayImage.fromResource(R.drawable.icon_startpoint)
             }
-            //startMarker?.position = LatLng(37.29422312, 126.9749711)
-            startMarker?.position = LatLng(37.29662728572387, 126.97542827360417)
+            if (locationSource.isActivated) {
+                val lastLocation: Location?= locationSource.lastLocation
+                lastLocation?.let {
+                    startMarker?.position = LatLng(it.latitude, it.longitude)
+                }
+            }
+            // callback()이 불러지지 않을 경우, 현위치를 디도로 설정
+            startMarker?.position = LatLng(37.29422312, 126.9749711)
 
             startMarker?.map = naverMap
         }
@@ -301,14 +309,39 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
                 }
             })
         }
+        // If end position is study spaces
         else {
             endMarker = Marker().apply {
                 icon = OverlayImage.fromResource(R.drawable.icon_endpoint)
             }
-            endMarker?.position = LatLng(37.293885,126.974871)
+            ApiObject.service.getStudyspace().enqueue(object : Callback<List<Studyspace>> {
+                override fun onResponse(
+                    call: Call<List<Studyspace>>,
+                    response: Response<List<Studyspace>>
+                ) {
+                    if (response.isSuccessful) {
+                        val studySpaces = response.body()
+                        studySpaces?.let { spaces ->
+                            spaces.forEach { space ->
+                                Log.d("DATA", space.name)
+                                if (space.name.equals(endString)) {
+                                    endMarker?.position = LatLng(space.latitude,space.longitude)
+                                }
+                            }
+                        }
+                    } else {
+                        // Handle API error response
+                    }
+                }
+                override fun onFailure(call: Call<List<Studyspace>>, t: Throwable) {
+                    // Handle network error
+                }
+            })
+            if (endMarker?.position?.longitude?.isNaN() == true)
+                endMarker?.position = LatLng(37.293885,126.974871)
             endMarker?.map = naverMap
         }
-        //val initialCameraPosition = CameraPosition(LatLng(avglat/2, avglng/2), 16.0)
+        // make initial camera position center 디도
         val initialCameraPosition = CameraPosition(LatLng(37.29422312, 126.9749711), 15.2)
         naverMap.moveCamera(CameraUpdate.toCameraPosition(initialCameraPosition))
     }
@@ -485,6 +518,7 @@ class RouteresultFragment : Fragment(), OnMapReadyCallback {
             //delete start, end at db
             else {
                 val items = bookmarkViewModel.items
+                items.removeAt(items.size-1)
                 val deleteObject = Deletepath(
                     ID= userId,
                     Sequence = items.size + 1
