@@ -21,7 +21,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
@@ -41,8 +40,6 @@ import edu.skku.cs.skkedula.api.BuildingResponse
 import edu.skku.cs.skkedula.api.RetrofitService
 import edu.skku.cs.skkedula.api.Studyspace
 import edu.skku.cs.skkedula.databinding.FragmentMapBinding
-import okhttp3.MediaType
-import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -77,7 +74,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private var studymarkersVisible = false
     private val markers = mutableListOf<Marker>()
     private val studymarkers = mutableListOf<Marker>()
-    private var activeCardFragment: String? = null
 
     // ActivityResultLauncher 선언
     private lateinit var permissionLauncher: ActivityResultLauncher<Array<String>>
@@ -92,7 +88,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 if (granted) {
                     initMapView()
                 }
-                // 여기에 권한 거부에 대한 처리 로직 추가 (옵션)
             }
     }
 
@@ -107,21 +102,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         retrofitService = retrofit.create(RetrofitService::class.java)
 
-        // Set up the EditText listener
-        val searchEditText = binding.search // replace with your actual EditText ID
+        val searchEditText = binding.search
         searchEditText.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH ||
                 event?.action == KeyEvent.ACTION_DOWN &&
                 event.keyCode == KeyEvent.KEYCODE_ENTER
             ) {
-
-                // Trigger your search function
-                //performTestSearch()
                 performSearch(searchEditText.text.toString())
-
-                // Hide the keyboard after search
                 hideKeyboard()
-
                 true // return true to indicate you've handled the event
             } else {
                 false
@@ -262,18 +250,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 icon = OverlayImage.fromResource(R.drawable.entrance_marker)
                 map = naverMap
             }
-            markers.add(marker) // Add the marker to the list
+            markers.add(marker)
         }
     }
 
-
     private fun removeMarkersFromMap() {
-        markers.forEach { it.map = null } // Remove each marker from the map
-        markers.clear() // Clear the list of markers
+        markers.forEach { it.map = null }
+        markers.clear()
     }
 
     private fun fetchAndDisplayStudySpaces() {
-        // Assuming you have a Retrofit service instance named 'service'
         if (!studymarkersVisible) {
             service.getStudyspace().enqueue(object : Callback<List<Studyspace>> {
                 override fun onResponse(
@@ -287,12 +273,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             studymarkersVisible = true
                         }
                     } else {
-                        // Handle API error response
                     }
                 }
-
                 override fun onFailure(call: Call<List<Studyspace>>, t: Throwable) {
-                    // Handle network error
                 }
             })
         } else {
@@ -331,7 +314,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private fun showCardView(marker: Marker) {
         val study = marker.tag as? Studyspace ?: return
         val bundle = Bundle().apply {
-            putString("studyName", study.name) // "studyName"은 전달할 키입니다.
+            putString("studyName", study.name)
             putString("address", study.address)
             putString("time", study.time)
         }
@@ -345,12 +328,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         addressTextView?.text = study.address
         timeTextView?.text = study.time
 
-        // Make the card view visible
         val cardView = activity?.findViewById<FragmentContainerView>(R.id.card)
         cardView?.visibility = View.VISIBLE
 
-        // Navigate to StudyDetailFragment using NavController
-        // Check if the FragmentContainerView for the card is a NavHostFragment
         val navHostFragment = activity?.supportFragmentManager?.findFragmentById(R.id.card) as? NavHostFragment
         navHostFragment?.let {
             it.navController.navigate(R.id.studyDetailFragment, bundle)
@@ -359,72 +339,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-
-    /*private fun performTestSearch() {
-        // JSON 형태로 Building 객체 생성
-        val json = "{\"Building_num\":\"85\"}"
-
-        // Gson 라이브러리를 사용하여 JSON을 Building 객체로 변환
-        val gson = Gson()
-        var testBuildingRequest = gson.fromJson(json, Building::class.java)
-
-        // buildingNum 속성을 설정
-        testBuildingRequest.buildingNum = "85"
-
-        // 로그로 Building 객체 상태 출력
-        Log.d("SearchDebug", "Test Building Request: $testBuildingRequest")
-        Log.d("RequestDebug", "API Request JSON: $json")
-
-        // Retrofit 요청을 testBuildingRequest로 수행
-        retrofitService.searchBuilding(testBuildingRequest).enqueue(object : Callback<BuildingResponse> {
-            override fun onResponse(call: Call<BuildingResponse>, response: Response<BuildingResponse>) {
-                if (response.isSuccessful) {
-                    // 성공적인 응답 처리
-                    val result = response.body()
-                    Log.d("SearchDebug", "Response: Latitude - ${result?.latitude}, Longitude - ${result?.longitude}")
-                } else {
-                    // 에러 응답 처리
-                    Log.d("SearchDebug", "No search result")
-                }
-            }
-
-            override fun onFailure(call: Call<BuildingResponse>, t: Throwable) {
-                // 네트워크 오류 처리
-                Log.d("SearchDebug", "Network Error: ${t.message}")
-            }
-        })
-    }*/
-
     private fun performSearch(searchText: String) {
 
         // 기존 카드뷰 숨기기
         hideCardView()
 
-        //데이터 하드코딩
-        if (searchText == "27323") {
-            // 하드 코딩된 데이터로 위치 정보 설정
-            val latitude = 37.2954353 // 임의의 위도
-            val longitude = 126.9763128 // 임의의 경도
-            val buildingName = "제2공학관27동" // 건물 이름
-            removeMarkersFromMap()
-            // 지도에 하드 코딩된 위치 정보를 추가
-            addMarkerToMap(latitude, longitude, buildingName)
-
-            // ViewModel에 건물 데이터 전달
-            mapViewModel.onBuildingDataReceived(BuildingResponse(buildingName, latitude, longitude))
-        } else if (searchText == "40") {
-            // 두 번째 하드 코딩된 데이터로 위치 정보 설정
-            val latitude = 37.291664 // 임의의 위도
-            val longitude = 126.977916 // 임의의 경도
-            val buildingName = "반도체관" // 건물 이름
-            removeMarkersFromMap()
-            // 지도에 두 번째 하드 코딩된 위치 정보를 추가
-            addMarkerToMap(latitude, longitude, buildingName)
-
-            // ViewModel에 건물 데이터 전달
-            mapViewModel.onBuildingDataReceived(BuildingResponse(buildingName, latitude, longitude))
         // 사용자 입력에 따라 적절한 Building 객체를 생성합니다.
-        /*val buildingRequest = when {
+        val buildingRequest = when {
             searchText.isDigitsOnly() && searchText.length > 4 -> Building.fromRoomNum(searchText.toInt())
             searchText.isDigitsOnly() -> Building.fromBuildingNum(searchText.toInt())
             else -> Building.fromName(searchText)
@@ -435,58 +356,37 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         Log.d("SearchDebug", "Request Body: $requestBody")
 
         // Retrofit을 사용하여 서버에 검색 요청을 보냅니다.
-        retrofitService.searchBuilding(buildingRequest)
+        service.searchBuilding(buildingRequest)
             .enqueue(object : Callback<BuildingResponse> {
                 override fun onResponse(
                     call: Call<BuildingResponse>,
                     response: Response<BuildingResponse>
                 ) {
+                    Log.d("RetrofitDebug", "Response Code: ${response.code()}")
                     if (response.isSuccessful) {
+                        Log.d("RetrofitDebug", "Response Body: ${response.body()}")
+                        // Handle successful response
                         val buildingResponse = response.body()
                         buildingResponse?.let {
                             // 지도에 마커 추가
-                            addMarkerToMap(it.buildingName, it.latitude, it.longitude)
+                            addMarkerToMap(it.latitude, it.longitude, it.buildingName)
                             // ViewModel에 건물 데이터 전달
                             mapViewModel.onBuildingDataReceived(it)
                         }
                     } else {
                         // 에러 응답 처리
+                        Log.d("RetrofitDebug", "Error Response: ${response.errorBody()?.string()}")
+                        // Handle error response
                         showToast("검색 결과가 없습니다")
                     }
                 }
 
                 override fun onFailure(call: Call<BuildingResponse>, t: Throwable) {
                     // 네트워크 오류 처리
-                    showToast("네트워크 오류: ${t.message}")
-                }*/
-            }//)
-    }
-
-    //하드코딩용
-    private fun addMarkerToMap(
-        latitude: Double,
-        longitude: Double,
-        buildingName: String
-    ) {
-        val marker = Marker().apply {
-            position = LatLng(latitude, longitude)
-            map = naverMap
-            icon = OverlayImage.fromResource(R.drawable.icon_startpoint)
-            tag = buildingName // 건물 이름을 태그로 저장
-        }
-        marker.onClickListener = Overlay.OnClickListener { overlay ->
-            val clickedMarker = overlay as? Marker
-            clickedMarker?.let {
-                // 클릭한 마커의 태그로 건물 이름을 가져옴
-                val buildingName = it.tag as? String
-                buildingName?.let {
-                    // 클릭한 건물 이름으로 BuildingDetailFragment로 이동
-                    showBuildingCardView(buildingName)
+                    //showToast("네트워크 오류: ${t.message}")
+                    Log.e("RetrofitDebug", "Failure: ${t.message}")
                 }
-            }
-            true
-        }
-        markers.add(marker)
+            })
     }
 
     private fun showBuildingCardView(buildingName: String) {
@@ -515,7 +415,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    /*private fun addMarkerToMap(buildingName: String, latitude: Double, longitude: Double) {
+    private fun addMarkerToMap(latitude: Double, longitude: Double, buildingName: String) {
         val marker = Marker().apply {
             position = LatLng(latitude, longitude)
             map = naverMap
@@ -525,23 +425,21 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         marker.onClickListener = Overlay.OnClickListener { overlay ->
             val clickedMarker = overlay as? Marker
             clickedMarker?.let {
-                navigateToBuildingDetail(it.tag as String)
+                // 클릭한 마커의 태그로 건물 이름을 가져옴
+                val buildingName = it.tag as? String
+                buildingName?.let {
+                    // 클릭한 건물 이름으로 BuildingDetailFragment로 이동
+                    showBuildingCardView(buildingName)
+                }
             }
             true
         }
+        markers.add(marker)
     }
-
-    private fun navigateToBuildingDetail(buildingName: String) {
-        val bundle = Bundle().apply {
-            putString("buildingName", buildingName)
-        }
-        findNavController().navigate(R.id.buildingDetailFragment, bundle)
-    }
-
 
     private fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }*/
+    }
 
 
     private fun hideKeyboard() {

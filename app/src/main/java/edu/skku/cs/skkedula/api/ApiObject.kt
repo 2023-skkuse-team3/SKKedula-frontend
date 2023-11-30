@@ -1,6 +1,5 @@
 package edu.skku.cs.skkedula.api
 
-
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
