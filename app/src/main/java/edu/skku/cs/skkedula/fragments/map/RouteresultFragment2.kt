@@ -94,13 +94,13 @@ class RouteresultFragment2 : Fragment(), OnMapReadyCallback {
         startpos = mapViewModel.endCoordinate
 
         startMarker = Marker().apply {
-            icon = OverlayImage.fromResource(R.drawable.icon_startpoint)
+            icon = OverlayImage.fromResource(R.drawable.icon_endpoint)
         }
         startMarker.position = startpos
         startMarker.map = naverMap
 
         endMarker = Marker().apply {
-            icon = OverlayImage.fromResource(R.drawable.icon_endpoint)
+            icon = OverlayImage.fromResource(R.drawable.icon_startpoint)
         }
         endMarker.position = endpos
         endMarker.map = naverMap
