@@ -1,6 +1,8 @@
 package edu.skku.cs.skkedula.fragments.timetable
 
 import android.util.Log
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.MutableLiveData
@@ -35,6 +37,11 @@ class TimetableViewModel : ViewModel() {
 
     private val _isSelectingStartPoint = MutableLiveData<Boolean>(false)
     val isSelectingStartPoint: LiveData<Boolean> = _isSelectingStartPoint
+
+    private var timeSlot: MutableList<String> = mutableListOf()
+
+    private val _toastMessage = MutableLiveData<String>()
+    val toastMessage: LiveData<String> get() = _toastMessage
 
     fun setTempCourseInfo(name: String, classroom: String) {
 
@@ -86,6 +93,9 @@ class TimetableViewModel : ViewModel() {
             _tempCourseTime.value = formatTimeString(itemList[0].time)
             _tempCourseType.value = itemList[0].classType
         }
+
+        // time slot에 시간 저장
+        _tempCourseTime.value?.let { timeSlot.add(it) }
     }
 
     fun addNewCourseToTimetable(newItem: Course) {
@@ -132,6 +142,14 @@ class TimetableViewModel : ViewModel() {
 
         Log.d("currentList in addNewCourseToTimetable", "$currentList")
 
+        // time slot에 존재하면 오류 메시지
+        if (timeSlot.contains(newItem.time)) {
+            _toastMessage.postValue("해당 시간에 다른 일정이 존재합니다.")
+            return
+        }
+
+        timeSlot.add(newItem.time)
+
         // 리스트에 새로운 강의 추가
         currentList.add(newItem)
 
@@ -143,12 +161,24 @@ class TimetableViewModel : ViewModel() {
         // 현재의 리스트를 가져와서 수정
         val currentList = _userCourseList.value ?: mutableListOf()
 
+        val itemList = currentList.filter { it.courseId == courseId }
+
+        // 강의 삭제
         currentList.removeIf {
             it.courseId == courseId
         }
 
+        // time slot에서 삭제
+        timeSlot.removeIf {
+            it == itemList[0].time
+        }
+
         // 수정된 리스트를 다시 LiveData에 설정
         _userCourseList.postValue(currentList)
+    }
+
+    fun initToastMessage() {
+        _toastMessage.value = ""
     }
 
     fun initTimetable() {
