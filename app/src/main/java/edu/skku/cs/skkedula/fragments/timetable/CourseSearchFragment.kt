@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import edu.skku.cs.skkedula.LoginActivity
 import edu.skku.cs.skkedula.R
@@ -54,6 +55,13 @@ class CourseSearchFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        timetableViewModel.initToastMessage()
+
+        timetableViewModel.toastMessage.observe(this, Observer { message ->
+            if (message.isNotEmpty())
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        })
     }
 
     override fun onCreateView(
@@ -104,9 +112,9 @@ class CourseSearchFragment : Fragment() {
 
                             courseList = tempCourseList
 
-                            val adapter = RecyclerViewAdapter(courseList){
+                            val adapter = RecyclerViewAdapter(courseList){ course ->
                                 // 선택된 강의 확인 toast
-                                course -> Toast.makeText(requireActivity(), "${course.courseId} 클릭!", Toast.LENGTH_SHORT).show()
+                                // Toast.makeText(requireActivity(), "${course.courseId} 클릭!", Toast.LENGTH_SHORT).show()
 
                                 // 강의 추가 api 호출
                                 val callAddCourse = ApiObject.service.addCourseToTimetable(

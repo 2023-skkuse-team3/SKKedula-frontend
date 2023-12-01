@@ -106,6 +106,14 @@ class EmptyTimetable : Fragment() {
 
                         response.body()?.let{
                             Log.d("OK", it.toString())
+
+                            if (it.data.isEmpty()) {
+                                Toast.makeText(context, "시간표 불러오기를 실패하였습니다.\n 다시 시도해주세요.", Toast.LENGTH_LONG).show()
+                                urlInput.text.clear()
+                                return
+                            }
+
+
                             it.data.forEachIndexed { index, course ->
                                 // 불러온 강의를 dataview에 추가
                                 timetableViewModel.addNewCourseToTimetable(course)
@@ -123,7 +131,7 @@ class EmptyTimetable : Fragment() {
                             editButton?.visibility = View.VISIBLE
 
                         } ?: run {
-                            Log.d("NG", "body is null")
+                            Toast.makeText(context, "시간표 불러오기를 실패하였습니다. 다시 시도해주세요.", Toast.LENGTH_LONG).show()
                         }
                     }
 
